@@ -34,11 +34,11 @@ namespace BizHawk.Client.EmuHawk
 			else
 				MemCapacityNumeric.Maximum = 1024;
 
-			MemCapacityNumeric.Value = Settings.Capacitymb == 0 ? 1 : Settings.Capacitymb < MemCapacityNumeric.Maximum ?
+			MemCapacityNumeric.Value = Settings.Capacitymb < MemCapacityNumeric.Maximum ?
 				Settings.Capacitymb : MemCapacityNumeric.Maximum;
-			DiskCapacityNumeric.Value = Settings.DiskCapacitymb == 0 ? 1 : Settings.DiskCapacitymb < MemCapacityNumeric.Maximum ?
+			DiskCapacityNumeric.Value = Settings.DiskCapacitymb < MemCapacityNumeric.Maximum ?
 				Settings.DiskCapacitymb : MemCapacityNumeric.Maximum;
-			SaveCapacityNumeric.Value = Settings.DiskSaveCapacitymb == 0 ? 1 : Settings.DiskSaveCapacitymb < MemCapacityNumeric.Maximum ?
+			SaveCapacityNumeric.Value = Settings.DiskSaveCapacitymb < MemCapacityNumeric.Maximum ?
 				Settings.DiskSaveCapacitymb : MemCapacityNumeric.Maximum;
 
 			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " mb";
@@ -48,7 +48,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private int MaxStatesInCapacity
 		{
-			get { return (int)Math.Floor((MemCapacityNumeric.Value + DiskCapacityNumeric.Value) / _stateSizeMb); }
+			get { return (int)Math.Floor(MemCapacityNumeric.Value / _stateSizeMb)
+				+ (int)Math.Floor(DiskCapacityNumeric.Value / _stateSizeMb);
+			}
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
