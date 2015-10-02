@@ -505,6 +505,8 @@ namespace BizHawk.Client.EmuHawk
         private IToolForm CreateInstance(Type toolType)
         {
             IToolForm tool;
+
+            //Specific case for custom tools
             if (toolType == typeof(ICustomGameTool))
             {
                 string path = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
@@ -514,6 +516,7 @@ namespace BizHawk.Client.EmuHawk
                 {
                     try
                     {
+                        //As the object is "remote" (external to the project), the CreateInstanceFrom returns a handle. We need to Unwrap in order to make the casting
                         tool = System.Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IToolForm;
                         if (tool == null)
                         {
