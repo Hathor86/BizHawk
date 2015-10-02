@@ -507,10 +507,30 @@ namespace BizHawk.Client.EmuHawk
             IToolForm tool;
             if (toolType == typeof(ICustomGameTool))
             {
-                string path = Path.Combine(PathManager.GetBasePathAbsolute(), "GameTool", string.Format("{0}.dll", Global.Game.Name));
-                if (File.Exists(path))
+                string path = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
+                if (File.Exists(path)
+                    && MessageBox.Show("A custom plugin has been found for the ROM you're loading. Do you want to load it?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
+                    ,"Answer to life, universe and everything else?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    tool = (IToolForm)System.Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap();
+                    try
+                    {
+                        tool = System.Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IToolForm;
+                        if (tool == null)
+                        {
+                            MessageBox.Show("It seems that the object CustomMainForm does not implement IToolForm. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return null;
+                        }
+                    }
+                    catch (MissingMethodException)
+                    {
+                        MessageBox.Show("It seems that the object CustomMainForm does not have a public default constructor. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return null;
+                    }
+                    catch (TypeLoadException)
+                    {
+                        MessageBox.Show("It seems that the object CustomMainForm does not exists. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return null;
+                    }
                 }
                 else
                 {
