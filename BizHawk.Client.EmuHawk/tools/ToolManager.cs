@@ -204,13 +204,10 @@ namespace BizHawk.Client.EmuHawk
 
             form.FormClosing += (o, e) =>
             {
-                if (form.WindowState == FormWindowState.Normal)
-                {
-                    settings.Wndx = form.Location.X;
-                    settings.Wndy = form.Location.Y;
-                    settings.Width = form.Right - form.Left; // why not form.Size.Width?
-                    settings.Height = form.Bottom - form.Top;
-                }
+                settings.Wndx = form.Location.X;
+                settings.Wndy = form.Location.Y;
+                settings.Width = form.Right - form.Left; // why not form.Size.Width?
+                settings.Height = form.Bottom - form.Top;
             };
 
             dest[idx + 0].Click += (o, e) =>
@@ -512,11 +509,11 @@ namespace BizHawk.Client.EmuHawk
                 string path = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
                 if (File.Exists(path)
                     && MessageBox.Show("A custom plugin has been found for the ROM you're loading. Do you want to load it?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
-                    ,"Answer to life, universe and everything else?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    , "Answer to life, universe and everything else?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     try
                     {
-                        //As the object is "remote" (external to the project), the CreateInstanceFrom returns a handle. We need to Unwrap in order to make the casting
+                        // As the object is "remote"(external to the project), the CreateInstanceFrom returns a handle.We need to Unwrap in order to make the casting
                         tool = System.Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IToolForm;
                         if (tool == null)
                         {
@@ -838,7 +835,7 @@ namespace BizHawk.Client.EmuHawk
             {
                 Load<GBGameGenie>();
             }
-            else if (Global.Emulator.SystemId == "GEN")
+            else if (Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild)
             {
                 Load<GenGameGenie>();
             }
