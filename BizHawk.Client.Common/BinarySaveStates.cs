@@ -2,133 +2,80 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 using ICSharpCode.SharpZipLib.Zip;
 //using Ionic.Zip;
 
 namespace BizHawk.Client.Common
 {
-	public class BinaryStateLump
+	public enum BinaryStateLump
 	{
-		[Name("BizState 1", "0")]
-		public static BinaryStateLump Versiontag { get; private set; }
-		[Name("Core", "bin")]
-		public static BinaryStateLump Corestate { get; private set; }
-		[Name("Framebuffer", "bmp")]
-		public static BinaryStateLump Framebuffer { get; private set; }
-		[Name("Input Log", "txt")]
-		public static BinaryStateLump Input { get; private set; }
-		[Name("CoreText", "txt")]
-		public static BinaryStateLump CorestateText { get; private set; }
-		[Name("MovieSaveRam", "bin")]
-		public static BinaryStateLump MovieSaveRam { get; private set; }
+		Versiontag,
+		Corestate,
+		Framebuffer,
+		Input,
+		CorestateText,
 
 		// Only for movies they probably shoudln't be leaching this stuff
-		[Name("Header", "txt")]
-		public static BinaryStateLump Movieheader { get; private set; }
-		[Name("Comments", "txt")]
-		public static BinaryStateLump Comments { get; private set; }
-		[Name("Subtitles", "txt")]
-		public static BinaryStateLump Subtitles { get; private set; }
-		[Name("SyncSettings", "json")]
-		public static BinaryStateLump SyncSettings { get; private set; }
+		Movieheader,
+		Comments,
+		Subtitles,
+		SyncSettings,
 
 		// TasMovie
-		[Name("LagLog")]
-		public static BinaryStateLump LagLog { get; private set; }
-		[Name("GreenZone")]
-		public static BinaryStateLump StateHistory { get; private set; }
-		[Name("GreenZoneSettings", "txt")]
-		public static BinaryStateLump StateHistorySettings { get; private set; }
-		[Name("Markers", "txt")]
-		public static BinaryStateLump Markers { get; private set; }
-		[Name("ClientSettings", "json")]
-		public static BinaryStateLump ClientSettings { get; private set; }
-		[Name("VerificationLog", "txt")]
-		public static BinaryStateLump VerificationLog { get; private set; }
+		LagLog,
+		StateHistory,
+		StateHistorySettings,
+		Markers,
+		ClientSettings,
+		VerificationLog,
 
-		[Name("UserData", "txt")]
-		public static BinaryStateLump UserData { get; private set; }
-
-		// branchstuff
-		[Name("Branches\\CoreData", "bin")]
-		public static BinaryStateLump BranchCoreData { get; private set; }
-		[Name("Branches\\InputLog", "txt")]
-		public static BinaryStateLump BranchInputLog { get; private set; }
-		[Name("Branches\\FrameBuffer", "bmp")]
-		public static BinaryStateLump BranchFrameBuffer { get; private set; }
-		[Name("Branches\\LagLog", "bin")]
-		public static BinaryStateLump BranchLagLog { get; private set; }
-		[Name("Branches\\Header", "json")]
-		public static BinaryStateLump BranchHeader { get; private set; }
-		[Name("Branches\\Markers", "txt")]
-		public static BinaryStateLump BranchMarkers { get; private set; }
-
-		[AttributeUsage(AttributeTargets.Property)]
-		private class NameAttribute : Attribute
-		{
-			public string Name { get; private set; }
-			public string Ext { get; private set; }
-			public NameAttribute(string name)
-			{
-				Name = name;
-			}
-			public NameAttribute(string name, string ext)
-			{
-				Name = name;
-				Ext = ext;
-			}
-		}
-
-		public virtual string ReadName { get { return Name; } }
-		public virtual string WriteName { get { return Ext != null ? Name + '.' + Ext : Name; } }
-
-		public string Name { get; protected set; }
-		public string Ext { get; protected set; }
-
-		private BinaryStateLump(string name, string ext)
-		{
-			Name = name;
-			Ext = ext;
-		}
-
-		protected BinaryStateLump() { }
-
-		static BinaryStateLump()
-		{
-			foreach (var prop in typeof(BinaryStateLump).GetProperties(BindingFlags.Public | BindingFlags.Static))
-			{
-				var attr = prop.GetCustomAttributes(false).OfType<NameAttribute>().Single();
-				object value = new BinaryStateLump(attr.Name, attr.Ext);
-				prop.SetValue(null, value, null);
-			}
-		}
+		UserData
 	}
 
-	/// <summary>
-	/// describes a BinaryStateLump virtual name that has a numerical index
-	/// </summary>
-	public class IndexedStateLump : BinaryStateLump
+	public static class BinaryStateFileNames
 	{
-		private BinaryStateLump _root;
-		private int _idx;
-		public IndexedStateLump(BinaryStateLump root)
+		private static readonly Dictionary<BinaryStateLump, string> ReadNames;
+		private static readonly Dictionary<BinaryStateLump, string> WriteNames;
+
+		static void AddLumpName(BinaryStateLump token, string name)
 		{
-			_root = root;
-			Ext = _root.Ext;
-			Calc();
+			ReadNames[token] = Path.GetFileNameWithoutExtension(name);
+			WriteNames[token] = name;
+		}
+		static BinaryStateFileNames()
+		{
+			ReadNames = new Dictionary<BinaryStateLump, string>();
+			WriteNames = new Dictionary<BinaryStateLump, string>();
+			AddLumpName(BinaryStateLump.Versiontag, "BizState 1.0");
+			AddLumpName(BinaryStateLump.Corestate, "Core");
+			AddLumpName(BinaryStateLump.Framebuffer, "Framebuffer.bmp");
+			AddLumpName(BinaryStateLump.Input, "Input Log.txt");
+			AddLumpName(BinaryStateLump.CorestateText, "CoreText.txt");
+			AddLumpName(BinaryStateLump.Movieheader, "Header.txt");
+
+			// Only for movies they probably shoudln't be leaching this stuff
+			AddLumpName(BinaryStateLump.Comments, "Comments.txt");
+			AddLumpName(BinaryStateLump.Subtitles, "Subtitles.txt");
+			AddLumpName(BinaryStateLump.SyncSettings, "SyncSettings.json");
+
+			// TasMovie
+			AddLumpName(BinaryStateLump.LagLog, "LagLog");
+			AddLumpName(BinaryStateLump.StateHistory, "GreenZone");
+			AddLumpName(BinaryStateLump.StateHistorySettings, "GreenZoneSettings.txt");
+			AddLumpName(BinaryStateLump.Markers, "Markers.txt");
+			AddLumpName(BinaryStateLump.ClientSettings, "ClientSettings.json");
+			AddLumpName(BinaryStateLump.VerificationLog, "VerificationLog.txt");
+			AddLumpName(BinaryStateLump.UserData, "UserData.txt");
 		}
 
-		private void Calc()
+		public static string GetReadName(BinaryStateLump lump)
 		{
-			Name = _root.Name + _idx;
+			return ReadNames[lump];
 		}
-
-		public void Increment()
+		public static string GetWriteName(BinaryStateLump lump)
 		{
-			_idx++;
-			Calc();
+			return WriteNames[lump];
 		}
 	}
 
@@ -185,14 +132,7 @@ namespace BizHawk.Client.Common
 			_entriesbyname = new Dictionary<string, ZipEntry>();
 			foreach (ZipEntry z in _zip)
 			{
-				string name = z.Name;
-				int i;
-				if ((i = name.LastIndexOf('.')) != -1)
-				{
-					name = name.Substring(0, i);
-				}
-
-				_entriesbyname.Add(name.Replace('/', '\\'), z);
+				_entriesbyname.Add(Path.GetFileNameWithoutExtension(z.Name), z);
 			}
 		}
 
@@ -227,11 +167,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[Obsolete]
 		public bool HasLump(BinaryStateLump lump)
 		{
+			string name = BinaryStateFileNames.GetReadName(lump);
 			ZipEntry e;
-			return _entriesbyname.TryGetValue(lump.ReadName, out e);
+			return _entriesbyname.TryGetValue(name, out e);
 		}
 
 		/// <summary>
@@ -243,8 +183,9 @@ namespace BizHawk.Client.Common
 		/// <returns>true if callback was called and stream was loaded</returns>
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
 		{
+			string name = BinaryStateFileNames.GetReadName(lump);
 			ZipEntry e;
-			if (_entriesbyname.TryGetValue(lump.ReadName, out e))
+			if (_entriesbyname.TryGetValue(name, out e))
 			{
 				using (var zs = _zip.GetInputStream(e))
 				{
@@ -256,7 +197,7 @@ namespace BizHawk.Client.Common
 			
 			if (abort)
 			{
-				throw new Exception("Essential zip section not found: " + lump.ReadName);
+				throw new Exception("Essential zip section not found: " + name);
 			}
 			
 			return false;
@@ -336,7 +277,8 @@ namespace BizHawk.Client.Common
 
 		public void PutLump(BinaryStateLump lump, Action<Stream> callback)
 		{
-			_zip.WriteItem(lump.WriteName, callback);
+			var name = BinaryStateFileNames.GetWriteName(lump);
+			_zip.WriteItem(name, callback);
 		}
 
 		public void PutLump(BinaryStateLump lump, Action<BinaryWriter> callback)

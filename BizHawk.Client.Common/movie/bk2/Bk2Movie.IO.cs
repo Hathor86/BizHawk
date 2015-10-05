@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 			Write(backupName);
 		}
 
-		public virtual bool Load(bool preload)
+		public virtual bool Load()
 		{
 			var file = new FileInfo(Filename);
 			if (!file.Exists)
@@ -141,15 +141,6 @@ namespace BizHawk.Client.Common
 								SavestateFramebuffer[i] = br.ReadInt32();
 						});
 				}
-
-				else if (StartsFromSaveRam)
-				{
-					bl.GetLump(BinaryStateLump.MovieSaveRam, false,
-						delegate(BinaryReader br, long length)
-						{
-							SaveRam = br.ReadBytes((int)length);
-						});
-				}
 			}
 
 			Changes = false;
@@ -158,6 +149,7 @@ namespace BizHawk.Client.Common
 
 		public bool PreLoadHeaderAndLength(HawkFile hawkFile)
 		{
+			// For now, preload simply loads everything
 			var file = new FileInfo(Filename);
 			if (!file.Exists)
 			{
@@ -165,7 +157,7 @@ namespace BizHawk.Client.Common
 			}
 
 			Filename = file.FullName;
-			return Load(true);
+			return Load();
 		}
 
 		protected virtual void Write(string fn)
@@ -200,10 +192,6 @@ namespace BizHawk.Client.Common
 						bs.PutLump(BinaryStateLump.Framebuffer,
 							(BinaryWriter bw) => BizHawk.Common.IOExtensions.IOExtensions.Write(bw, SavestateFramebuffer));
 					}
-				}
-				else if (StartsFromSaveRam)
-				{
-					bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
 				}
 			}
 

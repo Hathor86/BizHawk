@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = "LabelColumn",
 					Text = "",
-					Width = 125
+					Width = 139
 				}
 			});
 
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				color = Color.White;
 		}
 
-		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
 		{
 			text = "";
 
@@ -112,12 +112,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MarkerView.Refresh();
-		}
-
-		public void Restart()
-		{
-			MarkerView.DeselectAll();
-			UpdateValues();
 		}
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
@@ -162,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void EditMarker()
 		{
-			if (MarkerView.AnyRowsSelected)
+			if (MarkerView.SelectedRows.Any())
 			{
 				var index = MarkerView.SelectedRows.First();
 				var marker = Tastudio.CurrentTasMovie.Markers[index];
@@ -185,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int SelectedMarkerFrame()
 		{
-			if (MarkerView.AnyRowsSelected)
+			if (MarkerView.SelectedRows.Any())
 			{
 				var index = MarkerView.SelectedRows.First();
 				var marker = Tastudio.CurrentTasMovie.Markers[index];

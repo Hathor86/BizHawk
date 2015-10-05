@@ -13,9 +13,5 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			return new Vector2(size.Width, size.Height);
 		}
-		public static PointF ToSDPointf(this Vector3 v)
-		{
-			return new PointF(v.X, v.Y);
-		}
 	}
 }

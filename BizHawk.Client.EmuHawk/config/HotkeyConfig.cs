@@ -61,6 +61,11 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		private void RestoreDefaults_Click(object sender, EventArgs e)
+		{
+			Defaults();
+		}
+
 		private void AutoTabCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			SetAutoTab();
@@ -161,24 +166,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ClearAll(bool currentTabOnly)
-		{
-			if (currentTabOnly)
-			{
-				foreach (var w in InputWidgets)
-				{
-					w.Clear();
-				}
-			}
-			else
-			{
-				foreach (var w in HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>())
-				{
-					w.Clear();
-				}
-			}
-		}
-
 		private void SetAutoTab()
 		{
 			foreach (var w in InputWidgets)
@@ -210,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!e.Control && !e.Alt && !e.Shift &&
 				(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
 			{
-				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => string.Compare(x.DisplayName,SearchBox.Text,true)==0);
+				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == SearchBox.Text);
 
 				//Found
 				if (b != null)
@@ -219,28 +206,12 @@ namespace BizHawk.Client.EmuHawk
 					if (w != null)
 					{
 						HotkeyTabControl.SelectTab((w.Parent as TabPage));
-						Input.Instance.BindUnpress(e.KeyCode);
 						w.Focus();
 					}
 				}
 
 				e.Handled = true;
 			}
-		}
-
-		private void clearAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAll(true);
-		}
-
-		private void clearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ClearAll(false);
-		}
-
-		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Defaults();
 		}
 	}
 }

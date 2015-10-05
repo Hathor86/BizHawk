@@ -4,39 +4,29 @@ using System.Collections.Generic;
 namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
-	/// Represents an individual (fragment,vertex) shader.
-	/// It isnt IDisposable because itll be lifecycle-managed by the IGL (disposed when all dependent pipelines are disposed)
-	/// But if you want to be sure to save it for later, use AddRef
+	/// Just a lifecycle-managed wrapper around shader handles
 	/// </summary>
-	public class Shader
+	public class Shader : IDisposable
 	{
-		public Shader(IGL owner, object opaque, bool available)
+		public Shader(IGL owner, IntPtr id, bool available)
 		{
 			Owner = owner;
-			Opaque = opaque;
+			Id = id;
 			Available = available;
 		}
 
 		public IGL Owner { get; private set; }
-		public object Opaque { get; private set; }
+		public IntPtr Id { get; private set; }
+		public bool Disposed { get; private set; }
 		public bool Available { get; private set; }
+		public object Opaque;
 
-		int RefCount;
-
-		public void Release()
+		public void Dispose()
 		{
-			RefCount--;
-			if (RefCount <= 0)
-			{
-				Owner.Internal_FreeShader(this);
-				Available = false;
-			}
+			if (Disposed) return;
+			Disposed = true;
+			Owner.FreeShader(Id);
+			Id = Owner.GetEmptyHandle();
 		}
-
-		public void AddRef()
-		{
-			RefCount++;
-		}
-
 	}
 }

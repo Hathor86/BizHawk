@@ -146,7 +146,7 @@ namespace BizHawk.Common.StringExtensions
 				return true;
 			}
 
-			return char.ToUpperInvariant(c) >= 'A' && char.ToUpperInvariant(c) <= 'F';
+			return char.ToUpper(c) >= 'A' && char.ToUpper(c) <= 'F';
 		}
 
 		/// <summary>
@@ -303,7 +303,7 @@ namespace BizHawk.Common.StringExtensions
 				return string.Empty;
 			}
 
-			var output = new StringBuilder(raw.Length);
+			var output = new StringBuilder();
 
 			foreach (var chr in raw)
 			{

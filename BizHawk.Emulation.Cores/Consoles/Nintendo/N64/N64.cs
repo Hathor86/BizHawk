@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		singleInstance: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class N64 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IDisassemblable, IRegionable,
+	public partial class N64 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IDisassemblable,
 		ISettable<N64Settings, N64SyncSettings>
 	{
 		private readonly N64Input _inputProvider;
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					_display_type = DisplayType.NTSC;
 					break;
 			}
-			switch (Region)
+			switch (DisplayType)
 			{
 				case DisplayType.NTSC:
 					comm.VsyncNum = 60000;
@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public CoreComm CoreComm { get; private set; }
 
-		public DisplayType Region { get { return _display_type; } }
+		public DisplayType DisplayType { get { return _display_type; } }
 
 		public ISoundProvider SoundProvider { get { return null; } }
 

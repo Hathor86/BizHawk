@@ -9,10 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "MAPPER119":
-					Cart.vram_size = 8; Cart.wram_size = 0; // Junk ROMs get these wrong
-					break;
-				case "NES-TQROM": // High Speed and Pin Bot
+				case "NES-TQROM": //high speed and pinbot
 					AssertPrg(128); AssertChr(64); AssertVram(8); AssertWram(0);
 					break;
 				default:

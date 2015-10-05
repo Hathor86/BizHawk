@@ -159,11 +159,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!Global.Config.DisplayMessages)
-			{
-				return;
-			}
-
 			messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 			int line = 1;
 			if (Global.Config.StackOSDMessages)

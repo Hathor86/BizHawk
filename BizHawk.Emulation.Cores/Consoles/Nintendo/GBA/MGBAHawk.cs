@@ -11,7 +11,6 @@ using System.ComponentModel;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, false, "NOT DONE", "NOT DONE", false)]
-	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable, ISettable<object, MGBAHawk.SyncSettings>
 	{
 		IntPtr core;
@@ -165,9 +164,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region IMemoryDomains
 
-		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return *(byte*)xwram.ToPointer();}
-		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { *(byte*)xwram.ToPointer() = value; }
-
 		private MemoryDomainList CreateMemoryDomains(int romsize)
 		{
 			var s = new LibmGBA.MemoryAreas();
@@ -182,32 +178,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram, true, 4));
 			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam, false, 4));
 			mm.Add(MemoryDomain.FromIntPtr("ROM", romsize, l, s.rom, false, 4));
-
-			// special combined ram memory domain
-			{
-				var ew = mm[1];
-				var iw = mm[0];
-				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
-					delegate(long addr)
-					{
-						if (addr < 0 || addr >= (256 + 32) * 1024)
-							throw new IndexOutOfRangeException();
-						if (addr >= 256 * 1024)
-							return PeekWRAM(s.iwram,addr & 32767);
-						else
-							return PeekWRAM(s.wram, addr);
-					},
-					delegate(long addr, byte val)
-					{
-						if (addr < 0 || addr >= (256 + 32) * 1024)
-							throw new IndexOutOfRangeException();
-						if (addr >= 256 * 1024)
-							PokeWRAM(s.iwram, addr & 32767, val);
-						else
-							PokeWRAM(s.wram, addr, val);
-					}, 4);
-				mm.Add(cr);
-			}
 
 			_gpumem = new GBAGPUMemoryAreas
 			{

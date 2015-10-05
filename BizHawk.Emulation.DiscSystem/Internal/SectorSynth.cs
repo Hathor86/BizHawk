@@ -133,8 +133,6 @@ namespace BizHawk.Emulation.DiscSystem
 		public ISectorSynthJob2448 Get(int lba)
 		{
 			int index = lba - FirstLBA;
-			if (index < 0) return null;
-			if (index >= Sectors.Count) return null;
 			return Sectors[index];
 		}
 	}
@@ -231,8 +229,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//data is zero
 
-			int ts = lba_relative;
-			int ats = job.LBA;
+			Timestamp ts = new Timestamp(lba_relative);
+			Timestamp ats = new Timestamp(job.LBA);
 
 			const int ADR = 0x1; // Q channel data encodes position
 			EControlQ control = ses.LeadoutTrack.Control;

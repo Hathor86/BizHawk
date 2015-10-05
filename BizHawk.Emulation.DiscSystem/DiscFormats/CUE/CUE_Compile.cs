@@ -223,9 +223,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			string choice = null;
 			if (options.Count == 0)
 			{
-				Error(string.Format("Couldn't resolve referenced cue file: {0} ; you can commonly repair the cue file yourself, or a file might be missing", f.Path));
-				//add a null entry to keep the count from being wrong later (quiets a warning)
-				OUT_CompiledCueFiles.Add(null);
+				Error("Couldn't resolve referenced cue file: " + f.Path);
 				return;
 			}
 			else
@@ -236,7 +234,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 
 			var cfi = new CompiledCueFile();
-			curr_file = cfi;
 			OUT_CompiledCueFiles.Add(cfi);
 
 			cfi.FullPath = choice;
@@ -306,7 +303,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				Error("Cue file doesn't specify any input files!");
 
 			//we can't reliably analyze the length of files here, because we might have to be decoding to get lengths (VBR mp3s)
-			//REMINDER: we could actually scan the mp3 frames in software
 			//So, it's not really worth the trouble. We'll cope with lengths later
 			//we could check the format of the wav file here, though
 
@@ -315,8 +311,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			OUT_LoadTime = 0;
 			foreach (var cfi in OUT_CompiledCueFiles)
 			{
-				if (cfi == null)
-					continue;
 				if (cfi.Type == CompiledCueFileType.DecodeAudio)
 				{
 					needsCodec = true;
@@ -366,13 +360,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		void OpenTrack(CUE_File.Command.TRACK trackCommand)
 		{
-			//assert that a file is open
-			if(curr_file == null)
-			{
-				Error("Track command encountered with no active file");
-				throw new DiscJobAbortException();
-			}
-
 			curr_track = new CompiledCueTrack();
 
 			//spill cdtext data into this track
@@ -490,8 +477,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			CreateTrack1Pregap();
 			FinalAnalysis();
-
-			FinishLog();
 			
 		} //Run()
 

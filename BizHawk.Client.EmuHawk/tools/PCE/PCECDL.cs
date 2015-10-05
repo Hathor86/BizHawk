@@ -165,12 +165,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				var file = ToolHelpers.OpenFileDialog(
-					_currentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-					"Code Data Logger Files",
-					"cdl");
-
+				var file = ToolHelpers.GetCdlFileFromUser(_currentFileName);
 				if (file != null)
 				{
 					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
@@ -212,12 +207,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var file = ToolHelpers.SaveFileDialog(
-					_currentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-					"Code Data Logger Files",
-					"cdl");
-
+				var file = ToolHelpers.GetCdlSaveFileFromUser(_currentFileName);
 				if (file != null)
 				{
 					using (var fs = new FileStream(file.FullName, FileMode.Create, FileAccess.Write))
@@ -238,12 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var file = ToolHelpers.OpenFileDialog(
-					_currentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-					"Code Data Logger Files",
-					"cdl");
-
+				var file = ToolHelpers.GetCdlFileFromUser(_currentFileName);
 				if (file != null)
 				{
 					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))

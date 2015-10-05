@@ -72,15 +72,6 @@ namespace BizHawk.Client.Common
 							tw.WriteLine(data);
 						});
 				}
-
-				if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
-				{
-					bs.PutLump(BinaryStateLump.LagLog,
-						delegate(BinaryWriter bw)
-						{
-							(Global.MovieSession.Movie as TasMovie).TasLagLog.Save(bw);
-						});
-				}
 			}
 		}
 
@@ -103,17 +94,6 @@ namespace BizHawk.Client.Common
 					}
 				}
 				catch (EndOfStreamException) { }
-			}
-		}
-
-		public static void PopulateFramebuffer(byte[] bytes)
-		{
-			using (var ms = new MemoryStream(bytes))
-			{
-				using (var br = new BinaryReader(ms))
-				{
-					PopulateFramebuffer(br);
-				}
 			}
 		}
 
@@ -165,15 +145,6 @@ namespace BizHawk.Client.Common
 						});
 
 						Global.UserBag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
-					}
-
-					if (bl.HasLump(BinaryStateLump.LagLog)
-						&& Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
-					{
-						bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
-						{
-							(Global.MovieSession.Movie as TasMovie).TasLagLog.Load(br);
-						});
 					}
 				}
 				catch

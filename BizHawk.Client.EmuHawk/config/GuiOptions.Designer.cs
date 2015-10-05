@@ -47,7 +47,6 @@
 			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.LuaDuringTurboCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
 			this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
@@ -57,11 +56,10 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.LuaDuringTurboCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
-			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -102,7 +100,10 @@
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.groupBox1);
+			this.tabPage1.Controls.Add(this.StartFullScreenCheckbox);
+			this.tabPage1.Controls.Add(this.label14);
+			this.tabPage1.Controls.Add(this.label3);
+			this.tabPage1.Controls.Add(this.SingleInstanceModeCheckbox);
 			this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
 			this.tabPage1.Controls.Add(this.label2);
 			this.tabPage1.Controls.Add(this.AcceptBackgroundInputCheckbox);
@@ -110,6 +111,7 @@
 			this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
 			this.tabPage1.Controls.Add(this.SaveWindowPositionCheckbox);
 			this.tabPage1.Controls.Add(this.EnableContextMenuCheckbox);
+			this.tabPage1.Controls.Add(this.StartPausedCheckbox);
 			this.tabPage1.Controls.Add(this.PauseWhenMenuActivatedCheckbox);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -122,7 +124,7 @@
 			// StartFullScreenCheckbox
 			// 
 			this.StartFullScreenCheckbox.AutoSize = true;
-			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(6, 42);
+			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(98, 63);
 			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
 			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
 			this.StartFullScreenCheckbox.TabIndex = 3;
@@ -132,25 +134,25 @@
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(26, 99);
+			this.label14.Location = new System.Drawing.Point(26, 246);
 			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(306, 13);
+			this.label14.Size = new System.Drawing.Size(303, 13);
 			this.label14.TabIndex = 12;
-			this.label14.Text = "Note: Requires closing and reopening EmuHawk to take effect.";
+			this.label14.Text = "Note: Requires closing and reopening EmuHawk to take effect";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(26, 85);
+			this.label3.Location = new System.Drawing.Point(26, 232);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(275, 13);
+			this.label3.Size = new System.Drawing.Size(272, 13);
 			this.label3.TabIndex = 11;
-			this.label3.Text = "Enable to force only one instance of EmuHawk at a time.";
+			this.label3.Text = "Enable to force only one instance of EmuHawk at a time";
 			// 
 			// SingleInstanceModeCheckbox
 			// 
 			this.SingleInstanceModeCheckbox.AutoSize = true;
-			this.SingleInstanceModeCheckbox.Location = new System.Drawing.Point(6, 65);
+			this.SingleInstanceModeCheckbox.Location = new System.Drawing.Point(6, 212);
 			this.SingleInstanceModeCheckbox.Name = "SingleInstanceModeCheckbox";
 			this.SingleInstanceModeCheckbox.Size = new System.Drawing.Size(127, 17);
 			this.SingleInstanceModeCheckbox.TabIndex = 10;
@@ -160,7 +162,7 @@
 			// NeverAskSaveCheckbox
 			// 
 			this.NeverAskSaveCheckbox.AutoSize = true;
-			this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 72);
+			this.NeverAskSaveCheckbox.Location = new System.Drawing.Point(6, 109);
 			this.NeverAskSaveCheckbox.Name = "NeverAskSaveCheckbox";
 			this.NeverAskSaveCheckbox.Size = new System.Drawing.Size(184, 17);
 			this.NeverAskSaveCheckbox.TabIndex = 5;
@@ -170,7 +172,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(26, 155);
+			this.label2.Location = new System.Drawing.Point(26, 192);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(349, 13);
 			this.label2.TabIndex = 9;
@@ -179,7 +181,7 @@
 			// AcceptBackgroundInputCheckbox
 			// 
 			this.AcceptBackgroundInputCheckbox.AutoSize = true;
-			this.AcceptBackgroundInputCheckbox.Location = new System.Drawing.Point(6, 135);
+			this.AcceptBackgroundInputCheckbox.Location = new System.Drawing.Point(6, 172);
 			this.AcceptBackgroundInputCheckbox.Name = "AcceptBackgroundInputCheckbox";
 			this.AcceptBackgroundInputCheckbox.Size = new System.Drawing.Size(146, 17);
 			this.AcceptBackgroundInputCheckbox.TabIndex = 8;
@@ -189,7 +191,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(26, 115);
+			this.label1.Location = new System.Drawing.Point(26, 152);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(315, 13);
 			this.label1.TabIndex = 7;
@@ -198,7 +200,7 @@
 			// RunInBackgroundCheckbox
 			// 
 			this.RunInBackgroundCheckbox.AutoSize = true;
-			this.RunInBackgroundCheckbox.Location = new System.Drawing.Point(6, 95);
+			this.RunInBackgroundCheckbox.Location = new System.Drawing.Point(6, 132);
 			this.RunInBackgroundCheckbox.Name = "RunInBackgroundCheckbox";
 			this.RunInBackgroundCheckbox.Size = new System.Drawing.Size(117, 17);
 			this.RunInBackgroundCheckbox.TabIndex = 6;
@@ -208,7 +210,7 @@
 			// SaveWindowPositionCheckbox
 			// 
 			this.SaveWindowPositionCheckbox.AutoSize = true;
-			this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(6, 49);
+			this.SaveWindowPositionCheckbox.Location = new System.Drawing.Point(6, 86);
 			this.SaveWindowPositionCheckbox.Name = "SaveWindowPositionCheckbox";
 			this.SaveWindowPositionCheckbox.Size = new System.Drawing.Size(133, 17);
 			this.SaveWindowPositionCheckbox.TabIndex = 4;
@@ -218,7 +220,7 @@
 			// EnableContextMenuCheckbox
 			// 
 			this.EnableContextMenuCheckbox.AutoSize = true;
-			this.EnableContextMenuCheckbox.Location = new System.Drawing.Point(6, 26);
+			this.EnableContextMenuCheckbox.Location = new System.Drawing.Point(6, 40);
 			this.EnableContextMenuCheckbox.Name = "EnableContextMenuCheckbox";
 			this.EnableContextMenuCheckbox.Size = new System.Drawing.Size(128, 17);
 			this.EnableContextMenuCheckbox.TabIndex = 1;
@@ -228,7 +230,7 @@
 			// StartPausedCheckbox
 			// 
 			this.StartPausedCheckbox.AutoSize = true;
-			this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 19);
+			this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 63);
 			this.StartPausedCheckbox.Name = "StartPausedCheckbox";
 			this.StartPausedCheckbox.Size = new System.Drawing.Size(86, 17);
 			this.StartPausedCheckbox.TabIndex = 2;
@@ -238,7 +240,7 @@
 			// PauseWhenMenuActivatedCheckbox
 			// 
 			this.PauseWhenMenuActivatedCheckbox.AutoSize = true;
-			this.PauseWhenMenuActivatedCheckbox.Location = new System.Drawing.Point(6, 3);
+			this.PauseWhenMenuActivatedCheckbox.Location = new System.Drawing.Point(6, 17);
 			this.PauseWhenMenuActivatedCheckbox.Name = "PauseWhenMenuActivatedCheckbox";
 			this.PauseWhenMenuActivatedCheckbox.Size = new System.Drawing.Size(161, 17);
 			this.PauseWhenMenuActivatedCheckbox.TabIndex = 0;
@@ -262,16 +264,6 @@
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Advanced";
 			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// LuaDuringTurboCheckbox
-			// 
-			this.LuaDuringTurboCheckbox.AutoSize = true;
-			this.LuaDuringTurboCheckbox.Location = new System.Drawing.Point(6, 174);
-			this.LuaDuringTurboCheckbox.Name = "LuaDuringTurboCheckbox";
-			this.LuaDuringTurboCheckbox.Size = new System.Drawing.Size(166, 17);
-			this.LuaDuringTurboCheckbox.TabIndex = 15;
-			this.LuaDuringTurboCheckbox.Text = "Run lua scripts when turboing";
-			this.LuaDuringTurboCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label12
 			// 
@@ -304,7 +296,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(24, 94);
+			this.label9.Location = new System.Drawing.Point(24, 90);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(99, 13);
 			this.label9.TabIndex = 11;
@@ -313,7 +305,7 @@
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(24, 81);
+			this.label10.Location = new System.Drawing.Point(24, 77);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(277, 13);
 			this.label10.TabIndex = 10;
@@ -348,19 +340,15 @@
 			this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
 			this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// groupBox1
+			// LuaDuringTurboCheckbox
 			// 
-			this.groupBox1.Controls.Add(this.StartPausedCheckbox);
-			this.groupBox1.Controls.Add(this.label14);
-			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
-			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-			this.groupBox1.Location = new System.Drawing.Point(6, 177);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(369, 140);
-			this.groupBox1.TabIndex = 13;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Startup Options";
+			this.LuaDuringTurboCheckbox.AutoSize = true;
+			this.LuaDuringTurboCheckbox.Location = new System.Drawing.Point(6, 180);
+			this.LuaDuringTurboCheckbox.Name = "LuaDuringTurboCheckbox";
+			this.LuaDuringTurboCheckbox.Size = new System.Drawing.Size(166, 17);
+			this.LuaDuringTurboCheckbox.TabIndex = 15;
+			this.LuaDuringTurboCheckbox.Text = "Run lua scripts when turboing";
+			this.LuaDuringTurboCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// EmuHawkOptions
 			// 
@@ -382,8 +370,6 @@
 			this.tabPage1.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -418,6 +404,5 @@
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
 		private System.Windows.Forms.CheckBox LuaDuringTurboCheckbox;
-		private System.Windows.Forms.GroupBox groupBox1;
 	}
 }

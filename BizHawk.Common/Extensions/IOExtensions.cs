@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -28,20 +27,12 @@ namespace BizHawk.Common.IOExtensions
 		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
 		{
 			var read = new byte[bytes];
-			r.Read(read, 0, bytes);
-			return Encoding.UTF8.GetString(read);
-		}
-
-		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
-		{
-			MemoryStream ms = new MemoryStream();
-			for (; ; )
+			for (var b = 0; b < bytes; b++)
 			{
-				var b = br.ReadByte();
-				if (b == 0)
-					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
-				ms.WriteByte(b);
+				read[b] = r.ReadByte();
 			}
+
+			return Encoding.UTF8.GetString(read);
 		}
 
 		public static void CopyTo(this Stream src, Stream dest)

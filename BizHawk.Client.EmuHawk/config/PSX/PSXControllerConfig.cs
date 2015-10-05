@@ -89,10 +89,5 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
-
-		private void btnTest_Click(object sender, EventArgs e)
-		{
-			new PSXControllerConfigNew().ShowDialog();
-		}
 	}
 }

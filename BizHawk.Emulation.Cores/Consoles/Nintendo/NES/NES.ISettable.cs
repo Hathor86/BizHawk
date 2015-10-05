@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			CoreComm.ScreenLogicalOffsetX = videoProvider.left;
-			CoreComm.ScreenLogicalOffsetY = Region == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
+			CoreComm.ScreenLogicalOffsetY = DisplayType == DisplayType.NTSC ? Settings.NTSC_TopLine : Settings.PAL_TopLine;
 
 			SetPalette(Settings.Palette);
 
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public int PAL_TopLine = 0;
 			public int PAL_BottomLine = 239;
 
-			public byte[,] Palette;
+			public int[,] Palette;
 
 			public int Square1 = 376;
 			public int Square2 = 376;
@@ -113,22 +113,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public NESSettings Clone()
 			{
 				var ret = (NESSettings)MemberwiseClone();
-				ret.Palette = (byte[,])ret.Palette.Clone();
+				ret.Palette = (int[,])ret.Palette.Clone();
 				return ret;
 			}
 
 			public NESSettings()
 			{
-				Palette = (byte[,])Palettes.QuickNESPalette.Clone();
+				Palette = (int[,])Palettes.QuickNESPalette.Clone();
 			}
 
 			[Newtonsoft.Json.JsonConstructor]
-			public NESSettings(byte[,] Palette)
+			public NESSettings(int[,] Palette)
 			{
 				if (Palette == null)
 					// only needed for SVN purposes
-					// edit: what does this mean?
-					this.Palette = (byte[,])Palettes.QuickNESPalette.Clone();
+					this.Palette = (int[,])Palettes.QuickNESPalette.Clone();
 				else
 					this.Palette = Palette;
 			}

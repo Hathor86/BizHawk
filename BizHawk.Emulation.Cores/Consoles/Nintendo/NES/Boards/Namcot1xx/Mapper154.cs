@@ -3,7 +3,21 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// http://wiki.nesdev.com/w/index.php/INES_Mapper_154
+	/*
+	Example Games:
+	--------------------------
+	Devil Man
+	
+	Similar to Mapper 88 except for mirroring
+
+	$8000-$FFFF: [.Mxx xxxx]
+	x = See mapper 206 documentation
+	M = Mirroring
+		0 = 1ScA
+		1 = 1ScB
+	*/
+
+
 	public sealed class Mapper154 : Namcot108Board_Base
 	{
 		//configuration

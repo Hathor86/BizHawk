@@ -24,18 +24,19 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Dispose()
 		{
 			Owner.FreeTexture(this);
-			Opaque = null;
+			Id = Owner.GetEmptyHandle();
 		}
 
-		public Texture2d(IGL owner, object opaque, int width, int height)
+		public Texture2d(IGL owner, IntPtr id, object opaque, int width, int height)
 		{
 			Owner = owner;
+			Id = id;
 			Opaque = opaque;
 			Width = width;
 			Height = height;
 		}
 
-		public override string ToString()
+		public override string  ToString()
 		{
 			return string.Format("GL Tex: {0}x{1}", Width, Height);
 		}
@@ -46,12 +47,14 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void SetMinFilter(TextureMinFilter minFilter)
 		{
-			Owner.TexParameter2d(this,TextureParameterName.TextureMinFilter, (int)minFilter);
+			Owner.BindTexture2d(this);
+			Owner.TexParameter2d(TextureParameterName.TextureMinFilter, (int)minFilter);
 		}
 
 		public void SetMagFilter(TextureMagFilter magFilter)
 		{
-			Owner.TexParameter2d(this, TextureParameterName.TextureMagFilter, (int)magFilter);
+			Owner.BindTexture2d(this);
+			Owner.TexParameter2d(TextureParameterName.TextureMagFilter, (int)magFilter);
 		}
 
 		public void SetFilterLinear()
@@ -67,6 +70,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public IGL Owner { get; private set; }
+		public IntPtr Id { get; private set; }
 		public object Opaque { get; private set; }
 		
 		//note.. this was a lame idea. convenient, but weird. lets just change this back to ints.
@@ -80,7 +84,6 @@ namespace BizHawk.Bizware.BizwareGL
 
 		/// <summary>
 		/// opengl sucks, man. seriously, screw this (textures from render targets are upside down)
-		/// (couldnt we fix it up in the matrices somewhere?)
 		/// </summary>
 		public bool IsUpsideDown;
 	}

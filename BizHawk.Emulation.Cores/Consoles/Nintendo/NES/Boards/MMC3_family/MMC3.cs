@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		bool oldIrqType;
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
 			regs.Dispose();
 			chr_regs_1k.Dispose();
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Sync();
 		}
 
-		public virtual void Sync()
+		public void Sync()
 		{
 			SyncIRQ();
 			if (prg_mode)

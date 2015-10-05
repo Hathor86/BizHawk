@@ -30,9 +30,6 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				var tasmovie = (movie as TasMovie);
-				if (tasmovie != null)
-					tasmovie.TasStateManager.MountWriteAccess();
 				Global.MovieSession.QueueNewMovie(movie, record, Global.Emulator);
 			}
 			catch (MoviePlatformMismatchException ex)
@@ -85,10 +82,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				Global.Emulator.ResetCounters();
 			}
-			else if (Global.Emulator.HasSaveRam() && movie.StartsFromSaveRam)
-			{
-				Global.Emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
-			}
 
 			Global.MovieSession.RunQueuedMovie(record);
 
@@ -96,12 +89,6 @@ namespace BizHawk.Client.EmuHawk
 
 			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
-
-
-			if (Global.MovieSession.Movie.Hash != Global.Game.Hash)
-			{
-				GlobalWin.OSD.AddMessage("Warning: Movie hash does not match the ROM");
-			}
 
 			return true;
 		}

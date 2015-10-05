@@ -5,7 +5,8 @@ namespace BizHawk.Bizware.BizwareGL
 {
 	public class UniformInfo
 	{
-		public object Opaque;
+		public IntPtr Handle;
 		public string Name;
+		public int SamplerIndex;
 	}
 }

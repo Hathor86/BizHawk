@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				switch(Emulator.SystemId)
+				switch(Global.Emulator.SystemId)
 				{ 
 					default:
 					case "NULL":
@@ -91,11 +91,11 @@ namespace BizHawk.Client.Common
 					case "SG":
 						return SystemInfo.SG;
 					case "SMS":
-						if ((Emulator as SMS).IsGameGear)
+						if ((Global.Emulator as SMS).IsGameGear)
 						{
 							return SystemInfo.GG;
 						}
-						else if ((Emulator as SMS).IsSG1000)
+						else if ((Global.Emulator as SMS).IsSG1000)
 						{
 							return SystemInfo.SG;
 						}
@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 					case "SNES":
 						return SystemInfo.SNES;
 					case "GB":
-						if ((Emulator as Gameboy).IsCGBMode())
+						if ((Global.Emulator as Gameboy).IsCGBMode())
 						{
 							return SystemInfo.GBC;
 						}

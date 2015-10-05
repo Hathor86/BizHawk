@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER045":
-				case "UNIF_BMC-SuperHIK8in1":
 					break;
 				default:
 					return false;

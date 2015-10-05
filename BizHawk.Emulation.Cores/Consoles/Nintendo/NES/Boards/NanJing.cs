@@ -2,7 +2,6 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// http://wiki.nesdev.com/w/index.php/INES_Mapper_163
 	public sealed class NanJing : NES.NESBoardBase
 	{
 		/* 

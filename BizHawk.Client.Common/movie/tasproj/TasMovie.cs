@@ -20,9 +20,7 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager StateManager;
 		private readonly TasLagLog LagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
-		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-
-		private readonly TasBranchCollection Branches = new TasBranchCollection();
+		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
 		private BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
@@ -76,31 +74,9 @@ namespace BizHawk.Client.Common
 			BindMarkersToInput = true;
 		}
 
-		public TasLagLog TasLagLog { get { return LagLog; } }
-		public List<string> InputLog { get { return _log; } }
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
-		public int BranchCount { get { return Branches.Count; } }
-		public TasBranch GetBranch(int index) { return Branches[index]; }
-		public int BranchHashByIndex(int index) { return Branches[index].UniqueIdentifier.GetHashCode(); }
-
-		public int BranchIndexByHash(int hash)
-		{
-			TasBranch branch = Branches.Where(b => b.UniqueIdentifier.GetHashCode() == hash).SingleOrDefault();
-			if (branch == null)
-				return -1;
-			return Branches.IndexOf(branch);
-		}
-
-		public int BranchIndexByFrame(int frame)
-		{
-			TasBranch branch = Branches.Where(b => b.Frame == frame)
-				.OrderByDescending(b => b.TimeStamp).FirstOrDefault();
-			if (branch == null)
-				return -1;
-			return Branches.IndexOf(branch);
-		}
 
 		public override string PreferredExtension
 		{
@@ -195,13 +171,9 @@ namespace BizHawk.Client.Common
 		private void InvalidateAfter(int frame)
 		{
 			LagLog.RemoveFrom(frame);
-			var anyInvalidated = StateManager.Invalidate(frame + 1);
+			StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
-
-            if (anyInvalidated && Global.MovieSession.Movie.IsCountingRerecords)
-			{
-				base.Rerecords++;
-			}
+            base.Rerecords++;
 		}
 
 		/// <summary>
@@ -307,7 +279,8 @@ namespace BizHawk.Client.Common
 
 		public void CopyVerificationLog(IEnumerable<string> log)
 		{
-			foreach (string entry in log)
+			VerificationLog.Clear();
+			foreach (var entry in log)
 			{
 				VerificationLog.Add(entry);
 			}
@@ -476,90 +449,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
-		}
-
-		public void LoadBranch(TasBranch branch)
-		{
-			int? divergentPoint = DivergentPoint(_log, branch.InputLog);
-
-			_log = branch.InputLog.ToList();
-			//_changes = true;
-			LagLog.FromLagLog(branch.LagLog);
-
-			// if there are branch states, they will be loaded anyway
-			// but if there's none, or only *after* divergent point, don't invalidate the entire movie anymore
-			if (divergentPoint.HasValue)
-				StateManager.Invalidate(divergentPoint.Value); 
-			else
-				StateManager.Invalidate(branch.InputLog.Count);
-
-			StateManager.LoadBranch(Branches.IndexOf(branch));
-
-			StateManager.SetState(branch.Frame, branch.CoreData);
-
-			//ChangeLog = branch.ChangeLog;
-			Markers = branch.Markers;
-			Changes = true;
-		}
-
-		// TODO: use LogGenerators rather than string comparisons
-		private int? DivergentPoint(List<string> currentLog, List<string> newLog)
-		{
-			int max = newLog.Count;
-			if (currentLog.Count < newLog.Count)
-			{
-				max = currentLog.Count;
-			}
-
-			for (int i = 0; i < max; i++)
-			{
-				if (newLog[i] != currentLog[i])
-				{
-					return i;
-				}
-			}
-
-			return null;
-		}
-
-		public void AddBranch(TasBranch branch)
-		{
-			// before adding, make sure guid hash is unique too, we can't afford branch id clashes
-			do
-			{
-				branch.UniqueIdentifier = Guid.NewGuid();
-			} while (BranchIndexByHash(branch.UniqueIdentifier.GetHashCode()) != -1);
-
-			Branches.Add(branch);
-			TasStateManager.AddBranch();
-			Changes = true;
-		}
-
-		public void RemoveBranch(TasBranch branch)
-		{
-			TasStateManager.RemoveBranch(Branches.IndexOf(branch));
-			Branches.Remove(branch);
-			Changes = true;
-		}
-
-		public void UpdateBranch(TasBranch old, TasBranch newBranch)
-		{
-			int index = Branches.IndexOf(old);
-			Branches[index] = newBranch;
-			TasStateManager.UpdateBranch(index);
-			Changes = true;
-		}
-
-		public void SwapBranches(int b1, int b2)
-		{
-			TasBranch branch = Branches[b1];
-
-			if (b2 >= Branches.Count)
-				b2 = Branches.Count - 1;
-
-			Branches.Remove(branch);
-			Branches.Insert(b2, branch);
-			Changes = true;
 		}
 	}
 }

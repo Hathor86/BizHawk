@@ -118,7 +118,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public void Begin(sd.Size size) { Begin(size.Width, size.Height); }
 
 
-		public void Begin(int width, int height)
+		public void Begin(int width, int height, bool yflipped = false)
 		{
 			Begin();
 
@@ -163,24 +163,21 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
+			var tw = Gdi.TextureWrapperForTexture(tex);
 			var g = Gdi.GetCurrentGraphics();
-			PrepDraw(g, tex);
-			SetupMatrix(g);
-
+			PrepDraw(g, tw);
 			float x0 = u0 * tex.Width;
 			float y0 = v0 * tex.Height;
 			float x1 = u1 * tex.Width;
 			float y1 = v1 * tex.Height;
-
 			sd.PointF[] destPoints = new sd.PointF[] {
 				new sd.PointF(x,y),
 				new sd.PointF(x+w,y),
-				new sd.PointF(x,y+h),
+				new sd.PointF(x,y+h),	
 			};
 
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(x0, y0, x1 - x0, y1 - y0), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
-			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?
+			//g.DrawImage(tw.SDBitmap, 0, 0); //test
 		}
 
 
@@ -197,9 +194,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			DrawInternal(art, x, y, width, height);
 		}
 
-		void PrepDraw(sd.Graphics g, Texture2d tex)
+		void PrepDraw(sd.Graphics g, TextureWrapper tw)
 		{
-			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			//TODO - we can support bicubic for the final presentation..
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
 				throw new InvalidOperationException("tw.MagFilter != tw.MinFilter");
@@ -232,31 +228,25 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		}
 
-		private void SetupMatrix(sd.Graphics g)
-		{
-			//projection is always identity, so who cares i guess
-			//Matrix4 mat = Projection.Top * Modelview.Top;
-			Matrix4 mat = Modelview.Top;
-			g.Transform = new sd.Drawing2D.Matrix(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
-		}
-
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
+			var tw = Gdi.TextureWrapperForTexture(tex);
 			var g = Gdi.GetCurrentGraphics();
-			PrepDraw(g, tex);
+			PrepDraw(g, tw);
 
-			SetupMatrix(g);
-
-			sd.PointF[] destPoints = new sd.PointF[] {
-				new sd.PointF(x,y),
-				new sd.PointF(x+w,y),
-				new sd.PointF(x,y+h),
-			};
-
-			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
-			g.PixelOffsetMode = sd.Drawing2D.PixelOffsetMode.Half;
-			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
-			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?
+			//a little bit of a fastpath.. I think it's safe
+			//if (w == tex.Width && h == tex.Height && x == (int)x && y == (int)y)
+			//  g.DrawImageUnscaled(tw.SDBitmap, (int)x, (int)y);
+			//else
+			{
+				sd.PointF[] destPoints = new sd.PointF[] {
+					new sd.PointF(x,y),
+					new sd.PointF(x+w,y),
+					new sd.PointF(x,y+h),	
+				};
+				//g.DrawImage(tw.SDBitmap, x, y, w, h); //original
+				g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
+			}
 		}
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)

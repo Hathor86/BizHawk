@@ -32,7 +32,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void Dispose()
 		{
-			Pipeline.Dispose();
+			VertexLayout.Dispose();
+			VertexLayout = null;
 		}
 
 		public void Bind()

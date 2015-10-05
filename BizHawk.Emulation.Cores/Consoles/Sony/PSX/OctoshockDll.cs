@@ -77,25 +77,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Multitap = 10,
 		};
 
-		/// <summary>
-		/// this is implemented as an overall render type instead of a horizontal clip control
-		/// in case the Framebuffer render type ever develops any differences in its Y-handling.
-		/// At that time, we might need to change the GUI to separate the vertical and horizontal components, or something like that
-		/// </summary>
-		public enum eShockRenderType : int
-		{
-			Normal,
-			ClipOverscan,
-			Framebuffer
-		};
-
-		public enum eShockDeinterlaceMode : int
-		{
-			Weave,
-			Bob,
-			BobOffset
-		}
-
 		public const int SHOCK_OK = 0;
 		public const int SHOCK_FALSE = 0;
 		public const int SHOCK_TRUE = 1;
@@ -140,9 +121,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public struct ShockRenderOptions
 		{
 			public int scanline_start, scanline_end;
-			public eShockRenderType renderType;
-			public eShockDeinterlaceMode deinterlaceMode;
-			public bool skip;
+			public bool clipOverscan;
 		};
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -218,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public static extern int shock_Peripheral_PollActive(IntPtr psx, int address, bool clear);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size, bool ignore_pcsp);
+		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_PowerOn(IntPtr psx);
@@ -272,8 +251,5 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_SetTraceCallback(IntPtr psx, IntPtr opaque, ShockTraceCallback callback);
-
-		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetLEC(IntPtr psx, bool enable);
 	}
 }

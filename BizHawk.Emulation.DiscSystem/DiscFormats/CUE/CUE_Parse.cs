@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Generic;
 
@@ -27,11 +26,6 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// output: the resulting minimally-processed cue file
 		/// </summary>
 		public CUE_File OUT_CueFile;
-
-		/// <summary>
-		/// Indicates whether parsing will be strict or lenient
-		/// </summary>
-		public bool IN_Strict = false;
 
 
 		class CueLineParser
@@ -147,22 +141,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				var clp = new CueLineParser(line);
 
 				string key = clp.ReadToken().ToUpperInvariant();
-				
-				//remove nonsense at beginning
-				if (!IN_Strict)
-				{
-					while (key.Length > 0)
-					{
-						char c = key[0];
-						if(c == ';') break;
-						if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) break;
-						key = key.Substring(1);
-					}
-				}
-
-				bool startsWithSemicolon = key.StartsWith(";");
-
-				if (startsWithSemicolon)
+				if (key.StartsWith(";"))
 				{
 					clp.EOF = true;
 					OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT() { Value = line });
@@ -258,16 +237,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							}
 							string str_timestamp = clp.ReadToken();
 							var ts = new Timestamp(str_timestamp);
-							if (!ts.Valid && !IN_Strict)
-							{
-								//try cleaning it up
-								str_timestamp = Regex.Replace(str_timestamp, "[^0-9:]", "");
-								ts = new Timestamp(str_timestamp);
-							}
 							if (!ts.Valid)
 							{
-								if (IN_Strict)
-									job.Error("Invalid INDEX timestamp: " + str_timestamp);
+								job.Error("Invalid INDEX timestamp: " + str_timestamp);
 								break;
 							}
 							OUT_CueFile.Commands.Add(new CUE_File.Command.INDEX() { Number = indexnum, Timestamp = ts });

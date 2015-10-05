@@ -28,15 +28,6 @@ namespace BizHawk.Client.EmuHawk
 						.First(i => i.ToString()
 							.ToLower() == "now"));
 			}
-
-			if (!Global.Emulator.HasSaveRam())
-			{
-				StartFromCombo.Items.Remove(
-					StartFromCombo.Items
-						.OfType<object>()
-						.First(i => i.ToString()
-							.ToLower() == "saveram"));
-			}
 		}
 
 		private string MakePath()
@@ -93,7 +84,6 @@ namespace BizHawk.Client.EmuHawk
 					var core = Global.Emulator.AsStatable();
 
 					movieToRecord.StartsFromSavestate = true;
-					movieToRecord.StartsFromSaveRam = false;
 
 					if (core.BinarySaveStatesPreferred)
 					{
@@ -114,16 +104,10 @@ namespace BizHawk.Client.EmuHawk
 						movieToRecord.SavestateFramebuffer = new int[0];
 						if (movieToRecord.SavestateFramebuffer != null)
 						{
+
 							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider().GetVideoBuffer().Clone();
 						}
 					}
-				}
-				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && Global.Emulator.HasSaveRam())
-				{
-					var core = Global.Emulator.AsSaveRam();
-					movieToRecord.StartsFromSavestate = false;
-					movieToRecord.StartsFromSaveRam = true;
-					movieToRecord.SaveRam = core.CloneSaveRam();
 				}
 
 				movieToRecord.PopulateWithDefaultHeaderValues(AuthorBox.Text);

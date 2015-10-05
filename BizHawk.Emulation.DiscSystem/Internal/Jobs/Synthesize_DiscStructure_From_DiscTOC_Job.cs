@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					Number = i + 1,
 					Control = item.Control,
-					LBA = item.LBA
+					LBA = item.LBATimestamp.Sector
 				};
 				session.Tracks.Add(track);
 
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//kind of a guess, but not completely
 				Control = session.Tracks[session.Tracks.Count -1 ].Control,
 				Mode = session.Tracks[session.Tracks.Count - 1].Mode,
-				LBA = TOCRaw.LeadoutLBA
+				LBA = TOCRaw.LeadoutLBA.Sector
 			});
 
 			//link track list 

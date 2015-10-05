@@ -139,12 +139,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool SaveAs()
 		{
-			var file = ToolHelpers.SaveFileDialog(
-				Global.CheatList.CurrentFileName,
-				PathManager.GetCheatsPath(Global.Game),
-				"Cheat Files",
-				"cht");
-
+			var file = ToolHelpers.GetCheatSaveFileFromUser(Global.CheatList.CurrentFileName);
 			return file != null && Global.CheatList.SaveFile(file.FullName);
 		}
 
@@ -183,22 +178,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditCheat()
 		{
-			Global.CheatList.Exchange(CheatEditor.OriginalCheat, CheatEditor.Cheat);
-			UpdateDialog();
-			UpdateMessageLabel();
+			Global.CheatList.Remove(CheatEditor.OriginalCheat);
+			AddCheat();
 		}
 
 		public void SaveConfigSettings()
 		{
 			SaveColumnInfo();
-
-			if (WindowState == FormWindowState.Normal)
-			{
-				Settings.Wndx = Location.X;
-				Settings.Wndy = Location.Y;
-				Settings.Width = Right - Left;
-				Settings.Height = Bottom - Top;
-			}
+			Settings.Wndx = Location.X;
+			Settings.Wndy = Location.Y;
+			Settings.Width = Right - Left;
+			Settings.Height = Bottom - Top;
 		}
 
 		private void LoadConfigSettings()
@@ -389,13 +379,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var append = sender == AppendMenuItem;
-			var file = ToolHelpers.OpenFileDialog(
-				Global.CheatList.CurrentFileName,
-				PathManager.GetCheatsPath(Global.Game),
-				"Cheat Files",
-				"cht");
-
-			LoadFile(file, append);
+			LoadFile(ToolHelpers.GetCheatFileFromUser(Global.CheatList.CurrentFileName), append);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -538,7 +522,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
 			SelectedCheats.ToList().ForEach(x => x.Toggle());
-			CheatListView.Refresh();
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)

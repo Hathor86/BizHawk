@@ -33,10 +33,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 	/// </summary>
 	public class IGL_TK : IGL
 	{
-		//rendering state
-		Pipeline _CurrPipeline;
-		RenderTarget _CurrRenderTarget;
-
 		static IGL_TK()
 		{
 			//make sure OpenTK initializes without getting wrecked on the SDL check and throwing an exception to annoy our MDA's
@@ -83,16 +79,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			PurgeStateCache();
 		}
 
-		public void BeginScene()
-		{
-			//seems not to be needed...
-		}
-
-		public void EndScene()
-		{
-			//seems not to be needed...
-		}
-
 		void IDisposable.Dispose()
 		{
 			//TODO - a lot of analysis here
@@ -121,31 +107,57 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return glc;
 		}
 
-		public int GenTexture() { return GL.GenTexture(); }
+		public IntPtr GenTexture() { return new IntPtr(GL.GenTexture()); }
 		public void FreeTexture(Texture2d tex)
 		{
-			GL.DeleteTexture((int)tex.Opaque);
+			GL.DeleteTexture(tex.Id.ToInt32());
+		}
+		public IntPtr GetEmptyHandle() { return new IntPtr(0); }
+		public IntPtr GetEmptyUniformHandle() { return new IntPtr(-1); }
+
+		
+		public Shader CreateFragmentShader(string source, bool required)
+		{
+			return CreateShader(ShaderType.FragmentShader, source, required);
+		}
+		public Shader CreateVertexShader(string source, bool required)
+		{
+			return CreateShader(ShaderType.VertexShader, source, required);
 		}
 
-		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
-		{
-			return CreateShader(cg, ShaderType.FragmentShader, source, entry, required);
-		}
-		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
-		{
-			return CreateShader(cg, ShaderType.VertexShader, source, entry, required);
-		}
+		public void FreeShader(IntPtr shader) { GL.DeleteShader(shader.ToInt32()); }
 
+		class MyBlendState : IBlendState
+		{
+			public bool enabled;
+			public global::OpenTK.Graphics.OpenGL.BlendingFactorSrc colorSource;
+			public global::OpenTK.Graphics.OpenGL.BlendEquationMode colorEquation;
+			public global::OpenTK.Graphics.OpenGL.BlendingFactorDest colorDest;
+			public global::OpenTK.Graphics.OpenGL.BlendingFactorSrc alphaSource;
+			public global::OpenTK.Graphics.OpenGL.BlendEquationMode alphaEquation;
+			public global::OpenTK.Graphics.OpenGL.BlendingFactorDest alphaDest;
+			public MyBlendState(bool enabled, BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
+				BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
+			{
+				this.enabled = enabled;
+				this.colorSource = (global::OpenTK.Graphics.OpenGL.BlendingFactorSrc)colorSource;
+				this.colorEquation = (global::OpenTK.Graphics.OpenGL.BlendEquationMode)colorEquation;
+				this.colorDest = (global::OpenTK.Graphics.OpenGL.BlendingFactorDest)colorDest;
+				this.alphaSource = (global::OpenTK.Graphics.OpenGL.BlendingFactorSrc)alphaSource;
+				this.alphaEquation = (global::OpenTK.Graphics.OpenGL.BlendEquationMode)alphaEquation;
+				this.alphaDest = (global::OpenTK.Graphics.OpenGL.BlendingFactorDest)alphaDest;
+			}
+		}
 		public IBlendState CreateBlendState(BlendingFactorSrc colorSource, BlendEquationMode colorEquation, BlendingFactorDest colorDest,
 			BlendingFactorSrc alphaSource, BlendEquationMode alphaEquation, BlendingFactorDest alphaDest)
 		{
-			return new CacheBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
+			return new MyBlendState(true, colorSource, colorEquation, colorDest, alphaSource, alphaEquation, alphaDest);
 		}
 
 		public void SetBlendState(IBlendState rsBlend)
 		{
-			var mybs = rsBlend as CacheBlendState;
-			if (mybs.Enabled)
+			var mybs = rsBlend as MyBlendState;
+			if (mybs.enabled)
 			{
 				GL.Enable(EnableCap.Blend);
 				GL.BlendEquationSeparate(mybs.colorEquation, mybs.alphaEquation);
@@ -163,69 +175,20 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
 		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
-		class ShaderWrapper
-		{
-			public int sid;
-			public Dictionary<string, string> MapCodeToNative;
-			public Dictionary<string, string> MapNativeToCode;
-		}
-
-		class PipelineWrapper
-		{
-			public int pid;
-			public Shader FragmentShader, VertexShader;
-			public List<int> SamplerLocs;
-		}
-
-		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
+		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required)
 		{
 			bool success = true;
 
-			var vsw = vertexShader.Opaque as ShaderWrapper;
-			var fsw = fragmentShader.Opaque as ShaderWrapper;
-			var sws = new[] { vsw,fsw };
-
-			bool mapVariables = vsw.MapCodeToNative != null || fsw.MapCodeToNative != null;
-
 			ErrorCode errcode;
 			int pid = GL.CreateProgram();
-			GL.AttachShader(pid, vsw.sid);
+			GL.AttachShader(pid, vertexShader.Id.ToInt32());
 			errcode = GL.GetError();
-			GL.AttachShader(pid, fsw.sid);
+			GL.AttachShader(pid, fragmentShader.Id.ToInt32());
 			errcode = GL.GetError();
 
-			//NOT BEING USED NOW: USING SEMANTICS INSTEAD
-			////bind the attribute locations from the vertex layout
-			////as we go, look for attribute mappings (CGC will happily reorder and rename our attribute mappings)
-			////what's more it will _RESIZE_ them but this seems benign..somehow..
-			////WELLLLLLL we wish we could do that by names
-			////but the shaders dont seem to be adequate quality (oddly named attributes.. texCoord vs texCoord1). need to use semantics instead.
-			//foreach (var kvp in vertexLayout.Items)
-			//{
-			//  string name = kvp.Value.Name;
-			//  //if (mapVariables)
-			//  //{
-			//  //  foreach (var sw in sws)
-			//  //  {
-			//  //    if (sw.MapNativeToCode.ContainsKey(name))
-			//  //    {
-			//  //      name = sw.MapNativeToCode[name];
-			//  //      break;
-			//  //    }
-			//  //  }
-			//  //}
-
-			//  if(mapVariables) {
-			//    ////proxy for came-from-cgc
-			//    //switch (kvp.Value.Usage)
-			//    //{
-			//    //  case AttributeUsage.Position: 
-			//    //}
-			//  }
-				
-			//  //GL.BindAttribLocation(pid, kvp.Key, name);
-			//}
-
+			//bind the attribute locations from the vertex layout
+			foreach (var kvp in vertexLayout.Items)
+				GL.BindAttribLocation(pid, kvp.Key, kvp.Value.Name);
 			
 			GL.LinkProgram(pid);
 			errcode = GL.GetError();
@@ -268,51 +231,45 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//set the program to active, in case we need to set sampler uniforms on it
 			GL.UseProgram(pid);
 
-			//get all the attributes (not needed)
-			List<AttributeInfo> attributes = new List<AttributeInfo>();
-			int nAttributes;
-			GL.GetProgram(pid, GetProgramParameterName.ActiveAttributes, out nAttributes);
-			for (int i = 0; i < nAttributes; i++)
-			{
-				int size, length;
-				var sbName = new System.Text.StringBuilder(1024);
-				ActiveAttribType type;
-				GL.GetActiveAttrib(pid, i, 1024, out length, out size, out type, sbName);
-				attributes.Add(new AttributeInfo() { Handle = new IntPtr(i), Name = sbName.ToString() });
-			}
+			////get all the attributes (not needed)
+			//List<AttributeInfo> attributes = new List<AttributeInfo>();
+			//int nAttributes;
+			//GL.GetProgram(pid, GetProgramParameterName.ActiveAttributes, out nAttributes);
+			//for (int i = 0; i < nAttributes; i++)
+			//{
+			//  int size, length;
+			//  var sbName = new System.Text.StringBuilder();
+			//  ActiveAttribType type;
+			//  GL.GetActiveAttrib(pid, i, 1024, out length, out size, out type, sbName);
+			//  attributes.Add(new AttributeInfo() { Handle = new IntPtr(i), Name = sbName.ToString() });
+			//}
 
 			//get all the uniforms
 			List<UniformInfo> uniforms = new List<UniformInfo>();
 			int nUniforms;
+			int nSamplers = 0;
 			GL.GetProgram(pid,GetProgramParameterName.ActiveUniforms,out nUniforms);
-			List<int> samplers = new List<int>();
 
 			for (int i = 0; i < nUniforms; i++)
 			{
 				int size, length;
 				ActiveUniformType type;
-				var sbName = new System.Text.StringBuilder(1024);
+				var sbName = new System.Text.StringBuilder();
 				GL.GetActiveUniform(pid, i, 1024, out length, out size, out type, sbName);
 				errcode = GL.GetError();
 				string name = sbName.ToString();
 				int loc = GL.GetUniformLocation(pid, name);
-
-				//translate name if appropriate
-				//not sure how effective this approach will be, due to confusion of vertex and fragment uniforms
-				if (mapVariables)
-				{
-					if (vsw.MapCodeToNative.ContainsKey(name)) name = vsw.MapCodeToNative[name];
-					if (fsw.MapCodeToNative.ContainsKey(name)) name = fsw.MapCodeToNative[name];
-				}
-
 				var ui = new UniformInfo();
 				ui.Name = name;
-				ui.Opaque = loc;
+				ui.Handle = new IntPtr(loc);
 
-				if (type == ActiveUniformType.Sampler2D)
+				//automatically assign sampler uniforms to texture units (and bind them)
+				bool isSampler = (type == ActiveUniformType.Sampler2D);
+				if (isSampler)
 				{
-					ui.Opaque = loc | (samplers.Count << 24);
-					samplers.Add(loc);
+					ui.SamplerIndex = nSamplers;
+					GL.Uniform1(loc, nSamplers);
+					nSamplers++;
 				}
 
 				uniforms.Add(ui);
@@ -324,55 +281,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			if (!vertexShader.Available) success = false;
 			if (!fragmentShader.Available) success = false;
 
-			var pw = new PipelineWrapper() { pid = pid, VertexShader = vertexShader, FragmentShader = fragmentShader, SamplerLocs = samplers };
-
-			return new Pipeline(this, pw, success, vertexLayout, uniforms, memo);
+			return new Pipeline(this, new IntPtr(pid), success, vertexLayout, uniforms);
 		}
 
-		public void FreePipeline(Pipeline pipeline)
+		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, new IntPtr(0)); }
+
+		public void BindTexture2d(Texture2d tex)
 		{
-			var pw = pipeline.Opaque as PipelineWrapper;
-			GL.DeleteProgram(pw.pid);
-
-			pw.FragmentShader.Release();
-			pw.VertexShader.Release();
-		}
-
-		public void Internal_FreeShader(Shader shader)
-		{
-			GL.DeleteShader((int)shader.Opaque);
-		}
-
-		public void BindPipeline(Pipeline pipeline)
-		{
-			_CurrPipeline = pipeline;
-
-			if (pipeline == null)
-			{
-				sStatePendingVertexLayout = null;
-				GL.UseProgram(0);
-				return;
-			}
-
-			if (!pipeline.Available) throw new InvalidOperationException("Attempt to bind unavailable pipeline");
-			sStatePendingVertexLayout = pipeline.VertexLayout;
-
-			var pw = pipeline.Opaque as PipelineWrapper;
-			GL.UseProgram(pw.pid);
-
-			//this is dumb and confusing, but we have to bind physical sampler numbers to sampler variables.
-			for (int i = 0; i < pw.SamplerLocs.Count; i++)
-			{
-				GL.Uniform1(pw.SamplerLocs[i], i);
-			}
-		}
-
-
-		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, null); }
-
-		private void BindTexture2d(Texture2d tex)
-		{
-			GL.BindTexture(TextureTarget.Texture2D, (int)tex.Opaque);
+			GL.BindTexture(TextureTarget.Texture2D, tex.Id.ToInt32());
 		}
 
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)
@@ -399,67 +315,71 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.DrawArrays((global::OpenTK.Graphics.OpenGL.PrimitiveType)mode, first, count);
 		}
 
+		public void BindPipeline(Pipeline pipeline)
+		{
+			if (pipeline == null)
+			{
+				sStatePendingVertexLayout = null;
+				GL.UseProgram(0);
+				return;
+			}
+			if (!pipeline.Available) throw new InvalidOperationException("Attempt to bind unavailable pipeline");
+			sStatePendingVertexLayout = pipeline.VertexLayout;
+			GL.UseProgram(pipeline.Id.ToInt32());
+		}
+
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0); 
+			GL.Uniform1(uniform.Id.ToInt32(), value ? 1 : 0); 
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
 		{
-			//GL.UniformMatrix4((int)uniform.Opaque, 1, transpose, (float*)&mat);
-			GL.Uniform4((int)uniform.Sole.Opaque + 0, 1, (float*)&mat.Row0);
-			GL.Uniform4((int)uniform.Sole.Opaque + 1, 1, (float*)&mat.Row1);
-			GL.Uniform4((int)uniform.Sole.Opaque + 2, 1, (float*)&mat.Row2);
-			GL.Uniform4((int)uniform.Sole.Opaque + 3, 1, (float*)&mat.Row3);
+			GL.UniformMatrix4(uniform.Id.ToInt32(), 1, transpose, (float*)&mat);
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, ref Matrix4 mat, bool transpose)
 		{
 			fixed(Matrix4* pMat = &mat)
-				GL.UniformMatrix4((int)uniform.Sole.Opaque, 1, transpose, (float*)pMat);
+				GL.UniformMatrix4(uniform.Id.ToInt32(), 1, transpose, (float*)pMat);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector4 value)
 		{
-			GL.Uniform4((int)uniform.Sole.Opaque, value.X, value.Y, value.Z, value.W);
+			GL.Uniform4(uniform.Id.ToInt32(), value.X, value.Y, value.Z, value.W);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, Vector2 value)
 		{
-			GL.Uniform2((int)uniform.Sole.Opaque, value.X, value.Y);
+			GL.Uniform2(uniform.Id.ToInt32(), value.X, value.Y);
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, float value)
 		{
-			if (uniform.Owner == null) return; //uniform was optimized out
-			GL.Uniform1((int)uniform.Sole.Opaque, value);
+			GL.Uniform1(uniform.Id.ToInt32(), value);
 		}
 
 		public unsafe void SetPipelineUniform(PipelineUniform uniform, Vector4[] values)
 		{
 			fixed (Vector4* pValues = &values[0])
-				GL.Uniform4((int)uniform.Sole.Opaque, values.Length, (float*)pValues);
+				GL.Uniform4(uniform.Id.ToInt32(), values.Length, (float*)pValues);
 		}
 
-		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
+		public void SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle)
 		{
-			int n = ((int)uniform.Sole.Opaque)>>24;
-
 			//set the sampler index into the uniform first
-			if (sActiveTexture != n)
+			//now bind the texture
+			if(sActiveTexture != uniform.SamplerIndex)
 			{
-				sActiveTexture = n;
-				var selectedUnit = (TextureUnit)((int)TextureUnit.Texture0 + n);
+				sActiveTexture = uniform.SamplerIndex;
+				var selectedUnit = (TextureUnit)((int)TextureUnit.Texture0 + uniform.SamplerIndex);
 				GL.ActiveTexture(selectedUnit);
 			}
-
-			//now bind the texture
-			GL.BindTexture(TextureTarget.Texture2D, (int)tex.Opaque);
+			GL.BindTexture(TextureTarget.Texture2D, texHandle.ToInt32());
 		}
 
-		public void TexParameter2d(Texture2d tex, TextureParameterName pname, int param)
+		public void TexParameter2d(TextureParameterName pname, int param)
 		{
-			BindTexture2d(tex);
 			GL.TexParameter(TextureTarget.Texture2D, (global::OpenTK.Graphics.OpenGL.TextureParameterName)pname, param);
 		}
 
@@ -477,13 +397,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public Texture2d CreateTexture(int width, int height)
 		{
-			int id = GenTexture();
-			return new Texture2d(this, id, width, height);
+			IntPtr id = GenTexture();
+			return new Texture2d(this, id, null, width, height);
 		}
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			return new Texture2d(this as IGL, glTexId, width, height);
+			return new Texture2d(this as IGL, glTexId, null, width, height);
 		}
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
@@ -491,7 +411,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			sdi.BitmapData bmp_data = bmp.LockBits();
 			try
 			{
-				GL.BindTexture(TextureTarget.Texture2D, (int)tex.Opaque);
+				GL.BindTexture(TextureTarget.Texture2D, tex.Id.ToInt32());
 				GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, bmp.Width, bmp.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0);
 			}
 			finally
@@ -503,15 +423,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void FreeRenderTarget(RenderTarget rt)
 		{
 			rt.Texture2d.Dispose();
-			GL.Ext.DeleteFramebuffer((int)rt.Opaque);
+			GL.Ext.DeleteFramebuffer(rt.Id.ToInt32());
 		}
 
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			//create a texture for it
-			int texid = GenTexture();
-			Texture2d tex = new Texture2d(this, texid, w, h);
-			GL.BindTexture(TextureTarget.Texture2D,texid);
+			IntPtr texid = GenTexture();
+			Texture2d tex = new Texture2d(this, texid, null, w, h);
+			GL.BindTexture(TextureTarget.Texture2D,texid.ToInt32());
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, w, h, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
 			tex.SetMagFilter(TextureMagFilter.Nearest);
 			tex.SetMinFilter(TextureMinFilter.Nearest);
@@ -521,7 +441,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, fbid);
 
 			//bind the tex to the FBO
-			GL.Ext.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texid, 0);
+			GL.Ext.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texid.ToInt32(), 0);
 
 			//do something, I guess say which colorbuffers are used by the framebuffer
 			DrawBuffersEnum* buffers = stackalloc DrawBuffersEnum[1];
@@ -534,33 +454,32 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//since we're done configuring unbind this framebuffer, to return to the default
 			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
-			return new RenderTarget(this, fbid, tex);
+			return new RenderTarget(this, new IntPtr(fbid), tex);
 		}
 
 		public void BindRenderTarget(RenderTarget rt)
 		{
-			_CurrRenderTarget = rt;
 			if(rt == null)
 				GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 			else
-				GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, (int)rt.Opaque);
+				GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, rt.Id.ToInt32());
 		}
 
 		public Texture2d LoadTexture(BitmapBuffer bmp)
 		{
 			Texture2d ret = null;
-			int id = GenTexture();
+			IntPtr id = GenTexture();
 			try
 			{
-				ret = new Texture2d(this, id, bmp.Width, bmp.Height);
-				GL.BindTexture(TextureTarget.Texture2D, id);
+				ret = new Texture2d(this, id, null, bmp.Width, bmp.Height);
+				GL.BindTexture(TextureTarget.Texture2D, id.ToInt32());
 				//picking a color order that matches doesnt seem to help, any. maybe my driver is accelerating it, or maybe it isnt a big deal. but its something to study on another day
 				GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp.Width, bmp.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
 				(this as IGL).LoadTextureData(ret, bmp);
 			}
 			catch
 			{
-				GL.DeleteTexture(id);
+				GL.DeleteTexture(id.ToInt32());
 				throw;
 			}
 
@@ -592,9 +511,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return CreateGuiProjectionMatrix(new sd.Size(w, h));
 		}
 
-		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip)
+		public Matrix4 CreateGuiViewMatrix(int w, int h)
 		{
-			return CreateGuiViewMatrix(new sd.Size(w, h), autoflip);
+			return CreateGuiViewMatrix(new sd.Size(w, h));
 		}
 
 		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
@@ -605,22 +524,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return ret;
 		}
 
-		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoflip)
+		public Matrix4 CreateGuiViewMatrix(sd.Size dims)
 		{
 			Matrix4 ret = Matrix4.Identity;
 			ret.M22 = -1.0f;
-			ret.M41 = -(float)dims.Width * 0.5f;
-			ret.M42 = (float)dims.Height * 0.5f;
-			if (autoflip)
-			{
-				if (_CurrRenderTarget == null) { }
-				else
-				{
-					//flip as long as we're not a final render target
-					ret.M22 = 1.0f;
-					ret.M42 *= -1;
-				}
-			}
+			ret.M41 = -(float)dims.Width * 0.5f; // -0.5f;
+			ret.M42 = (float)dims.Height * 0.5f; // +0.5f;
 			return ret;
 		}
 
@@ -628,7 +537,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		{
 			GL.Viewport(x, y, width, height);
 			GL.Scissor(x, y, width, height); //hack for mupen[rice]+intel: at least the rice plugin leaves the scissor rectangle scrambled, and we're trying to run it in the main graphics context for intel
-			//BUT ALSO: new specifications.. viewport+scissor make sense together
 		}
 
 		public void SetViewport(int width, int height)
@@ -663,33 +571,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			return glc;
 		}
 
-		Shader CreateShader(bool cg, ShaderType type, string source, string entry, bool required)
+		Shader CreateShader(ShaderType type, string source, bool required)
 		{
-			var sw = new ShaderWrapper();
-			if (cg)
-			{
-				var cgc = new CGC();
-				var results = cgc.Run(source, entry, type == ShaderType.FragmentShader ? "glslf" : "glslv");
-				
-				if (!results.Succeeded)
-					return new Shader(this, null, false);
-
-				source = results.Code;
-				sw.MapCodeToNative = results.MapCodeToNative;
-				sw.MapNativeToCode = results.MapNativeToCode;
-			}
-
 			int sid = GL.CreateShader(type);
-			bool ok = CompileShaderSimple(sid, source, required);
+			bool ok = CompileShaderSimple(sid,source, required);
 			if(!ok)
 			{
 				GL.DeleteShader(sid);
 				sid = 0;
 			}
 
-			sw.sid = sid;
-
-			return new Shader(this, sw, ok);
+			return new Shader(this, new IntPtr(sid), ok);
 		}
 
 		bool CompileShaderSimple(int sid, string source, bool required)
@@ -717,16 +609,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			string resultLog = GL.GetShaderInfoLog(sid);
 
 			if (errcode != ErrorCode.NoError)
-			{
-				string message = "Error compiling shader (CompileShader) " + errcode + "\r\n\r\n" + resultLog;
 				if (required)
-					throw new InvalidOperationException(message);
-				else
-				{
-					Console.WriteLine(message);
-					success = false;
-				}
-			}
+					throw new InvalidOperationException("Error compiling shader (CompileShader) " + errcode + "\r\n\r\n" + resultLog);
+				else success = false;
 
 			int n;
 			GL.GetShader(sid, ShaderParameter.CompileStatus, out n);
@@ -760,53 +645,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (layout == null) return;
 
-			//disable all the client states.. a lot of overhead right now, to be sure
-			GL.DisableClientState(ArrayCap.VertexArray);
-			GL.DisableClientState(ArrayCap.ColorArray);
-			for(int i=0;i<8;i++)
-				GL.DisableVertexAttribArray(i);
-			for (int i = 0; i < 8; i++)
-			{
-				GL.ClientActiveTexture(TextureUnit.Texture0 + i);
-				GL.DisableClientState(ArrayCap.TextureCoordArray);
-			}
-			GL.ClientActiveTexture(TextureUnit.Texture0);
-
 			foreach (var kvp in layout.Items)
 			{
-				if(_CurrPipeline.Memo == "gui")
-				{
-					GL.VertexAttribPointer(kvp.Key, kvp.Value.Components, (VertexAttribPointerType)kvp.Value.AttribType, kvp.Value.Normalized, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
-					GL.EnableVertexAttribArray(kvp.Key);
-					currBindings.Add(kvp.Key);
-				}
-				else
-				{
-
-					var pw = _CurrPipeline.Opaque as PipelineWrapper;
-
-					//comment SNACKPANTS
-					switch (kvp.Value.Usage)
-					{
-						case AttributeUsage.Position:
-							GL.EnableClientState(ArrayCap.VertexArray);
-							GL.VertexPointer(kvp.Value.Components,VertexPointerType.Float,kvp.Value.Stride,new IntPtr(pData) + kvp.Value.Offset);
-							break;
-						case AttributeUsage.Texcoord0:
-							GL.ClientActiveTexture(TextureUnit.Texture0);
-							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
-							break;
-						case AttributeUsage.Texcoord1:
-							GL.ClientActiveTexture(TextureUnit.Texture1);
-							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(kvp.Value.Components, TexCoordPointerType.Float, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
-							GL.ClientActiveTexture(TextureUnit.Texture0);
-							break;
-						case AttributeUsage.Color0:
-							break;
-					}
-				}
+				GL.VertexAttribPointer(kvp.Key, kvp.Value.Components, (VertexAttribPointerType)kvp.Value.AttribType, kvp.Value.Normalized, kvp.Value.Stride, new IntPtr(pData) + kvp.Value.Offset);
+				GL.EnableVertexAttribArray(kvp.Key);
+				currBindings.Add(kvp.Key);
 			}
 		}
 
@@ -823,23 +666,23 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		void CreateRenderStates()
 		{
-			_rsBlendNoneVerbatim = new CacheBlendState(
+			_rsBlendNoneVerbatim = new MyBlendState(
 				false, 
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-
-			_rsBlendNoneOpaque = new CacheBlendState(
+			
+			_rsBlendNoneOpaque = new MyBlendState(
 				false, 
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
 				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
-
-			_rsBlendNormal = new CacheBlendState(
+			
+			_rsBlendNormal = new MyBlendState(
 				true,
 				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 		}
 
-		CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
+		MyBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
 
 		//state caches
 		int sActiveTexture;

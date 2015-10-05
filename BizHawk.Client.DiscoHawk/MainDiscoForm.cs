@@ -47,15 +47,7 @@ namespace BizHawk.Client.DiscoHawk
 				this.Cursor = Cursors.WaitCursor;
 				foreach (var file in files)
 				{
-					var job = new DiscMountJob { IN_FromPath = file };
-					job.Run();
-					var disc = job.OUT_Disc;
-					if (job.OUT_ErrorLevel)
-					{
-						System.Windows.Forms.MessageBox.Show(job.OUT_Log, "Error loading disc");
-						break;
-					}
-
+					var disc = Disc.LoadAutomagic(file);
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
 					string outfile = Path.Combine(Path.GetDirectoryName(file), baseName) + ".ccd";
@@ -65,7 +57,7 @@ namespace BizHawk.Client.DiscoHawk
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Error loading disc");
+				MessageBox.Show(ex.ToString(), "oops! error");
 				throw;
 			}
 		}

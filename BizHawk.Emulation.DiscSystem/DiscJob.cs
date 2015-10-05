@@ -55,8 +55,4 @@ namespace BizHawk.Emulation.DiscSystem
 			swLog.Write(job.OUT_Log);
 		}
 	}
-
-	class DiscJobAbortException : Exception
-	{
-	};
 }

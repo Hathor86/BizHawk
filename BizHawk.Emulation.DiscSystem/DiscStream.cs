@@ -65,24 +65,16 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public DiscStream(Disc disc, EDiscStreamView view, int from_lba)
 		{
+			if (view != EDiscStreamView.DiscStreamView_Mode1_2048)
+				throw new NotSupportedException("disc streams of not mode 1 are currently unsupported");
+
 			SectorSize = 2048;
 			Disc = disc;
 			NumSectors = disc.Session1.LeadoutLBA;
 			dsr = new DiscSectorReader(disc);
 
 			//following the provided view
-			switch (view)
-			{
-				case EDiscStreamView.DiscStreamView_Mode1_2048:
-					dsr.Policy.UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1;
-					break;
-				case EDiscStreamView.DiscStreamView_Mode2_Form1_2048:
-					dsr.Policy.UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1;
-					break;
-				default:
-					throw new NotSupportedException("Unsupported EDiscStreamView");
-			}
-
+			dsr.Policy.UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1;
 
 			currPosition = from_lba * SectorSize;
 			cachedSector = -1;

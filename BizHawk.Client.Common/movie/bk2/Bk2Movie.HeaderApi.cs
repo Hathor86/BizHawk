@@ -76,31 +76,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool StartsFromSaveRam
-		{
-			get
-			{
-				if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM))
-				{
-					return bool.Parse(Header[HeaderKeys.STARTSFROMSAVERAM]);
-				}
-
-				return false;
-			}
-
-			set
-			{
-				if (value)
-				{
-					Header.Add(HeaderKeys.STARTSFROMSAVERAM, "True");
-				}
-				else
-				{
-					Header.Remove(HeaderKeys.STARTSFROMSAVERAM);
-				}
-			}
-		}
-
 		public string GameName
 		{
 			get
@@ -264,6 +239,5 @@ namespace BizHawk.Client.Common
 		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }
 		public int[] SavestateFramebuffer { get; set; }
-		public byte[] SaveRam { get; set; }
 	}
 }

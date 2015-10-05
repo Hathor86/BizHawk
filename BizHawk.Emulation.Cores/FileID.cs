@@ -280,7 +280,6 @@ namespace BizHawk.Emulation.Cores
 			public static SimpleMagicRecord PSX = new SimpleMagicRecord { Offset = 0x24E0, Key = "  Licensed  by          Sony Computer Entertainment" }; //there might be other ideas for checking in mednafen sources, if we need them
 			public static SimpleMagicRecord PSX_EXE = new SimpleMagicRecord { Key = "PS-X EXE\0" };
 			public static SimpleMagicRecord PSP = new SimpleMagicRecord { Offset = 0x8000, Key = "\x01CD001\x01\0x00PSP GAME" };
-			public static SimpleMagicRecord PSF = new SimpleMagicRecord { Offset = 0, Key = "PSF\x1" };
 
 			//https://sites.google.com/site/atari7800wiki/a78-header
 			public static SimpleMagicRecord A78 = new SimpleMagicRecord { Offset = 0, Key = "\x01ATARI7800" };
@@ -349,7 +348,7 @@ namespace BizHawk.Emulation.Cores
 			{ "GEN", new ExtensionInfo(FileIDType.SMD, null ) },
 
 			//nothing yet...
-			{ "PSF", new ExtensionInfo(FileIDType.PSF, (j)=>Test_Simple(j,FileIDType.PSF,SimpleMagics.PSF) ) },
+			{ "PSF", new ExtensionInfo(FileIDType.PSF, null) },
 			{ "INT", new ExtensionInfo(FileIDType.INT, null) },
 			{ "SFC", new ExtensionInfo(FileIDType.SFC, null) },
 			{ "SMC", new ExtensionInfo(FileIDType.SFC, null) },

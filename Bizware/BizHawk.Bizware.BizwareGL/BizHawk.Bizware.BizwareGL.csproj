@@ -60,7 +60,6 @@
     <Compile Include="Borrowed\BitmapFontParser\Kerning.cs" />
     <Compile Include="Borrowed\BitmapFontParser\Padding.cs" />
     <Compile Include="Borrowed\BitmapFontParser\Page.cs" />
-    <Compile Include="CGC.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GraphicsControl.cs">
       <SubType>UserControl</SubType>
@@ -80,7 +79,6 @@
     <Compile Include="RetainedGraphicsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RetroShader.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="StringRenderer.cs" />
     <Compile Include="TexAtlas.cs" />

@@ -396,14 +396,13 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			int[] rTOC = new int[102];
 			var ses = CD.Session1;
-			int ntrk = ses.InformationTrackCount;
+			int ntrk = ses.Tracks.Count;
 
-			for (int i = 0; i < 99; i++)
+			for (int i = 1; i <= 99; i++)
 			{
-				int tnum = i + 1;
-				if (tnum <= ntrk)
+				if (i < ntrk)
 				{
-					var trk = ses.Tracks[tnum];
+					var trk = ses.Tracks[i];
 
 					uint t = (uint)trk.LBA + 150;
 
@@ -422,7 +421,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			rTOC[99] = (int)(rTOC[0] & 0xff000000 | 0x010000);
 			rTOC[100] = (int)(rTOC[ntrk - 1] & 0xff000000 | (uint)(ntrk << 16));
-			rTOC[101] = (int)(rTOC[ntrk - 1] & 0xff000000 | (uint)(CD.TOC.LeadoutLBA)); //zero 03-jul-2014 - maybe off by 150
+			rTOC[101] = (int)(rTOC[ntrk - 1] & 0xff000000 | (uint)(CD.TOC.LeadoutLBA.Sector)); //zero 03-jul-2014 - maybe off by 150
 			
 
 			Marshal.Copy(rTOC, 0, dest, 102);

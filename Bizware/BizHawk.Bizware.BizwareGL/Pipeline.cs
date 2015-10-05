@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace BizHawk.Bizware.BizwareGL
@@ -9,32 +8,24 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class Pipeline : IDisposable
 	{
-		public string Memo;
-
-		public Pipeline(IGL owner, object opaque, bool available, VertexLayout vertexLayout, IEnumerable<UniformInfo> uniforms, string memo)
+		public Pipeline(IGL owner, IntPtr id, bool available, VertexLayout vertexLayout, IEnumerable<UniformInfo> uniforms)
 		{
-			Memo = memo;
 			Owner = owner;
-			Opaque = opaque;
+			Id = id;
 			VertexLayout = vertexLayout;
 			Available = available;
 
 			//create the uniforms from the info list we got
-			if(!Available)
-				return;
-
 			UniformsDictionary = new SpecialWorkingDictionary(this);
 			foreach(var ui in uniforms)
-				UniformsDictionary[ui.Name] = new PipelineUniform(this);
-			foreach (var ui in uniforms)
 			{
-				UniformsDictionary[ui.Name].AddUniformInfo(ui);
+				UniformsDictionary[ui.Name] = new PipelineUniform(this, ui);
 			}
 		}
 
 		/// <summary>
 		/// Allows us to create PipelineUniforms on the fly, in case a non-existing one has been requested.
-		/// Shader compilers will optimize out unused uniforms, and we wont have a record of it in the uniforms population loop
+		/// GLSL will optimize out unused uniforms, and we wont have a record of it in the uniforms population loop
 		/// </summary>
 		class SpecialWorkingDictionary : Dictionary<string, PipelineUniform>
 		{
@@ -52,8 +43,8 @@ namespace BizHawk.Bizware.BizwareGL
 					if (!TryGetValue(key, out temp))
 					{
 						var ui = new UniformInfo();
-						ui.Opaque = null;
-						temp = this[key] = new PipelineUniform(null);
+						ui.Handle = Owner.Owner.GetEmptyUniformHandle();
+						temp = this[key] = new PipelineUniform(Owner,ui);
 					}
 
 					return temp;
@@ -75,13 +66,16 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public IGL Owner { get; private set; }
-		public object Opaque { get; private set; }
+		public IntPtr Id { get; private set; }
 		public VertexLayout VertexLayout { get; private set; }
 		public bool Available { get; private set; }
+		public object Opaque;
 
 		public void Dispose()
 		{
-			Owner.FreePipeline(this);
+			//todo
 		}
+
+
 	}
 }

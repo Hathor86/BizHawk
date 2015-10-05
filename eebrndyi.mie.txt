@@ -1,0 +1,387 @@
+﻿Revert "Merge remote-tracking branch 'TASVideos/master' into Release"
+
+This reverts commit 489995846f6ef896952dbf97304282d03bc0d184, reversing
+changes made to 24c98ab5aeb3139d2d1c962d4f15ce501788fcd7.
+
+Conflicts:
+	BizHawk.Client.EmuHawk/MainForm.cs
+	BizHawk.Client.EmuHawk/tools/ToolManager.cs
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch Release
+# Your branch is up-to-date with 'origin/Release'.
+#
+# You are currently reverting commit 4899958.
+#
+# Changes to be committed:
+#	modified:   BizHawk.Client.Common/BinarySaveStates.cs
+#	modified:   BizHawk.Client.Common/BizHawk.Client.Common.csproj
+#	modified:   BizHawk.Client.Common/GLManager.cs
+#	modified:   BizHawk.Client.Common/Global.cs
+#	modified:   BizHawk.Client.Common/PathManager.cs
+#	modified:   BizHawk.Client.Common/QuickBmpFile.cs
+#	modified:   BizHawk.Client.Common/RomLoader.cs
+#	modified:   BizHawk.Client.Common/SavestateManager.cs
+#	modified:   BizHawk.Client.Common/XmlGame.cs
+#	modified:   BizHawk.Client.Common/config/Config.cs
+#	modified:   BizHawk.Client.Common/inputAdapters/InputAdapters.cs
+#	deleted:    BizHawk.Client.Common/lua/EmuLuaLibrary.MemorySavestate.cs
+#	modified:   BizHawk.Client.Common/lua/EmuLuaLibrary.Movie.cs
+#	modified:   BizHawk.Client.Common/lua/EmuLuaLibrary.String.cs
+#	modified:   BizHawk.Client.Common/lua/LuaFunctionList.cs
+#	modified:   BizHawk.Client.Common/lua/LuaMemoryBase.cs
+#	modified:   BizHawk.Client.Common/movie/HeaderKeys.cs
+#	modified:   BizHawk.Client.Common/movie/MovieService.cs
+#	modified:   BizHawk.Client.Common/movie/MovieSession.cs
+#	modified:   BizHawk.Client.Common/movie/bk2/Bk2LogEntryGenerator.cs
+#	modified:   BizHawk.Client.Common/movie/bk2/Bk2Movie.HeaderApi.cs
+#	modified:   BizHawk.Client.Common/movie/bk2/Bk2Movie.IO.cs
+#	modified:   BizHawk.Client.Common/movie/bkm/BkmMovie.HeaderApi.cs
+#	modified:   BizHawk.Client.Common/movie/bkm/BkmMovie.IO.cs
+#	modified:   BizHawk.Client.Common/movie/conversions/MovieConversionExtensions.cs
+#	modified:   BizHawk.Client.Common/movie/import/MovieImport.cs
+#	modified:   BizHawk.Client.Common/movie/interfaces/IMovie.cs
+#	deleted:    BizHawk.Client.Common/movie/tasproj/StateManagerState.cs
+#	deleted:    BizHawk.Client.Common/movie/tasproj/TasBranch.cs
+#	modified:   BizHawk.Client.Common/movie/tasproj/TasLagLog.cs
+#	modified:   BizHawk.Client.Common/movie/tasproj/TasMovie.History.cs
+#	modified:   BizHawk.Client.Common/movie/tasproj/TasMovie.IO.cs
+#	modified:   BizHawk.Client.Common/movie/tasproj/TasMovie.cs
+#	modified:   BizHawk.Client.Common/movie/tasproj/TasMovieMarker.cs
+#	modified:   BizHawk.Client.Common/movie/tasproj/TasStateManager.cs
+#	modified:   BizHawk.Client.Common/tools/CheatList.cs
+#	modified:   BizHawk.Client.DiscoHawk/DiscoHawk.cs
+#	modified:   BizHawk.Client.DiscoHawk/MainDiscoForm.cs
+#	renamed:    BizHawk.Client.Common/BitmapBufferVideoProvider.cs -> BizHawk.Client.EmuHawk/AVOut/BitmapBufferVideoProvder.cs
+#	modified:   BizHawk.Client.EmuHawk/AVOut/FFmpegWriter.cs
+#	modified:   BizHawk.Client.EmuHawk/BizHawk.Client.EmuHawk.csproj
+#	deleted:    BizHawk.Client.EmuHawk/CustomControls/InputRoll.Drawing.cs
+#	modified:   BizHawk.Client.EmuHawk/DisplayManager/DisplayManager.cs
+#	modified:   BizHawk.Client.EmuHawk/DisplayManager/Filters/Gui.cs
+#	modified:   BizHawk.Client.EmuHawk/DisplayManager/OSDManager.cs
+#	modified:   BizHawk.Client.EmuHawk/GlobalWin.cs
+#	modified:   BizHawk.Client.EmuHawk/Input/GamePad360.cs
+#	deleted:    BizHawk.Client.EmuHawk/Input/IPCKeyInput.cs
+#	modified:   BizHawk.Client.EmuHawk/Input/Input.cs
+#	modified:   BizHawk.Client.EmuHawk/Input/Keyboard.cs
+#	modified:   BizHawk.Client.EmuHawk/MainForm.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/MainForm.Events.cs
+#	modified:   BizHawk.Client.EmuHawk/MainForm.Hotkey.cs
+#	modified:   BizHawk.Client.EmuHawk/MainForm.Movie.cs
+#	modified:   BizHawk.Client.EmuHawk/MainForm.cs
+#	modified:   BizHawk.Client.EmuHawk/MainForm.resx
+#	modified:   BizHawk.Client.EmuHawk/PresentationPanel.cs
+#	modified:   BizHawk.Client.EmuHawk/Properties/Resources.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/Properties/Resources.resx
+#	modified:   BizHawk.Client.EmuHawk/Throttle.cs
+#	modified:   BizHawk.Client.EmuHawk/config/DisplayConfigLite.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/config/DisplayConfigLite.cs
+#	modified:   BizHawk.Client.EmuHawk/config/GuiOptions.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/config/HotkeyConfig.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/config/HotkeyConfig.cs
+#	modified:   BizHawk.Client.EmuHawk/config/HotkeyConfig.resx
+#	modified:   BizHawk.Client.EmuHawk/config/MessageConfig.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/config/MessageConfig.cs
+#	modified:   BizHawk.Client.EmuHawk/config/NES/NESGraphicsConfig.cs
+#	modified:   BizHawk.Client.EmuHawk/config/NES/NESSyncSettingsForm.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/config/NES/NESSyncSettingsForm.cs
+#	modified:   BizHawk.Client.EmuHawk/config/PSX/PSXControllerConfig.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/config/PSX/PSXControllerConfig.cs
+#	deleted:    BizHawk.Client.EmuHawk/config/PSX/PSXControllerConfigNew.Designer.cs
+#	deleted:    BizHawk.Client.EmuHawk/config/PSX/PSXControllerConfigNew.cs
+#	deleted:    BizHawk.Client.EmuHawk/config/PSX/PSXControllerConfigNew.resx
+#	modified:   BizHawk.Client.EmuHawk/config/PSX/PSXOptions.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/config/PSX/PSXOptions.cs
+#	modified:   BizHawk.Client.EmuHawk/config/PSX/PSXOptions.resx
+#	deleted:    BizHawk.Client.EmuHawk/images/BlankCursor.cur
+#	deleted:    BizHawk.Client.EmuHawk/images/basicbot.ico
+#	deleted:    BizHawk.Client.EmuHawk/images/kitchensink.png
+#	deleted:    BizHawk.Client.EmuHawk/images/tastudio/icon_anchor.png
+#	deleted:    BizHawk.Client.EmuHawk/images/tastudio/icon_anchor_lag.png
+#	deleted:    BizHawk.Client.EmuHawk/images/tastudio/icon_marker.png
+#	modified:   BizHawk.Client.EmuHawk/movie/PlayMovie.cs
+#	modified:   BizHawk.Client.EmuHawk/movie/RecordMovie.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/movie/RecordMovie.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/BasicBot/BasicBot.Designer.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/BasicBot/BasicBot.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/BasicBot/BasicBot.resx
+#	deleted:    BizHawk.Client.EmuHawk/tools/BasicBot/BotControlsRow.Designer.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/BasicBot/BotControlsRow.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/BasicBot/BotControlsRow.resx
+#	modified:   BizHawk.Client.EmuHawk/tools/Cheats/Cheats.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Debugger/AddBreakpointDialog.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Debugger/AddBreakpointDialog.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Debugger/Breakpoint.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Debugger/BreakpointControl.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Debugger/BreakpointControl.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/HexEditor/HexEditor.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/HexEditor/HexEditor.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/InputPrompt.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Lua/Libraries/EmuLuaLibrary.Client.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Lua/Libraries/EmuLuaLibrary.Forms.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Lua/Libraries/EmuLuaLibrary.Gui.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Lua/Libraries/EmuLuaLibrary.Savestate.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Lua/LuaFunctionsForm.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/MultiDiskBundler/MultiDiskBundler.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/NES/NESMusicRipper.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/PCE/PCECDL.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/BookmarksBranchesBox.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/BookmarksBranchesBox.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/BookmarksBranchesBox.resx
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/GreenzoneSettings.cs
+#	renamed:    BizHawk.Client.EmuHawk/CustomControls/InputRoll.cs -> BizHawk.Client.EmuHawk/tools/TAStudio/InputRoll.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/MarkerControl.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/MarkerControl.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/PlaybackBox.Designer.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/TAStudio/ScreenshotPopupControl.Designer.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/TAStudio/ScreenshotPopupControl.cs
+#	deleted:    BizHawk.Client.EmuHawk/tools/TAStudio/ScreenshotPopupControl.resx
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.Callbacks.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.IToolForm.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.ListView.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.MenuItems.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.Navigation.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/TAStudio.resx
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/UndoHistoryForm.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/TAStudio/UndoHistoryForm.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/ToolHelpers.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/ToolManager.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/VirtualPads/VirtualPad.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/VirtualPads/controls/VirtualPadAnalogStick.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/VirtualPads/controls/VirtualPadAnalogStick.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/VirtualPads/controls/components/AnalogSticklPanel.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/VirtualPads/schema/N64Schema.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/VirtualPads/schema/PSXSchema.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/VirtualPads/schema/PadSchema.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Watch/RamSearch.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Watch/RamWatch.Designer.cs
+#	modified:   BizHawk.Client.EmuHawk/tools/Watch/RamWatch.cs
+#	modified:   BizHawk.Client.MultiHawk/DisplayManager/DisplayManager.cs
+#	modified:   BizHawk.Client.MultiHawk/Mainform.cs
+#	modified:   BizHawk.Common/BizHawk.Common.csproj
+#	modified:   BizHawk.Common/Extensions/IOExtensions.cs
+#	modified:   BizHawk.Common/Extensions/StringExtensions.cs
+#	deleted:    BizHawk.Common/NDBDatabase.cs
+#	modified:   BizHawk.Emulation.Common/Base Implementations/ControllerDefinition.cs
+#	modified:   BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj
+#	modified:   BizHawk.Emulation.Common/Database/Database.cs
+#	modified:   BizHawk.Emulation.Common/Extensions.cs
+#	deleted:    BizHawk.Emulation.Common/Interfaces/IRegionable.cs
+#	modified:   BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj
+#	modified:   BizHawk.Emulation.Cores/Calculator/TI83.cs
+#	modified:   BizHawk.Emulation.Cores/Computers/AppleII/AppleII.cs
+#	modified:   BizHawk.Emulation.Cores/Computers/Commodore64/C64.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Atari/2600/Atari2600.Core.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Atari/2600/Atari2600.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Atari/7800/Atari7800.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Atari/lynx/Lynx.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/GBA/MGBAHawk.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/GBA/Meteor.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/GBA/VBANext.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/Gameboy/Gambatte.ITraceable.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/Gameboy/Gambatte.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/N64/N64.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/AVE-NINA.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/BANDAI_74_161_02_74.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Bonza.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/FFE/Mapper006.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/FFE/Mapper017.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/IC_74x377.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/MMC3_family/MMC3.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/MMC3_family/Mapper191.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/MMC3_family/Mapper197.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/MMC3_family/Mapper245.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/MMC3_family/TQROM.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/MMC3_family/TxROM.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper034.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper036.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper045.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper051.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper053.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper090.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper091.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper136.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper147.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper164.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper168.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper202.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper204.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper212.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper213.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper214.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper225.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper226.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper235.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper241.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper243.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper244.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Mapper60.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/NES-EVENT.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/NROM.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Namcot1xx/Mapper154.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/NanJing.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/SachenSimple.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/SxROM.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/Taito_TC0190FMC.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF-DREAMTECH01.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-190in1.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-8157.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-A65AS.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-BS-5.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-D1038.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-GS-2004.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-GS-2013.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_BMC-T-262.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_UNL-AX5705.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_UNL-CC-21.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/UNIF/UNIF_UNL-EDU2000.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Boards/inlnsf.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/NES.BoardSystem.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/NES.Core.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/NES.ISettable.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/NES.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/NES.iNES.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/PPU.run.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Palettes.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/NES/Unif.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/QuickNES/QuickNES.ISettable.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/QuickNES/QuickNES.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Nintendo/SNES/LibsnesCore.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Sega/SMS/SMS.Input.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Sega/SMS/SMS.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Sega/Saturn/Yabause.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Sega/gpgx/GPGX.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Sega/gpgx/LibGPGX.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Sony/PSX/Octoshock.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Sony/PSX/OctoshockControlConfig.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/Sony/PSX/OctoshockDll.cs
+#	deleted:    BizHawk.Emulation.Cores/Consoles/Sony/PSX/PSF.cs
+#	modified:   BizHawk.Emulation.Cores/Consoles/WonderSwan/WonderSwan.cs
+#	modified:   BizHawk.Emulation.Cores/FileID.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscDecoding.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscFormats/CCD_format.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscFormats/CUE/CUE_Compile.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscFormats/CUE/CUE_Load.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscFormats/CUE/CUE_Parse.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscFormats/CUE/CueFileResolver.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscHasher.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscIdentifier.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscJob.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscMountJob.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscSectorReader.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscStream.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscStructure.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscSubQ.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscTOC.cs
+#	modified:   BizHawk.Emulation.DiscSystem/DiscTypes.cs
+#	modified:   BizHawk.Emulation.DiscSystem/Internal/Jobs/Synthesize_A0A1A2_Job.cs
+#	modified:   BizHawk.Emulation.DiscSystem/Internal/Jobs/Synthesize_DiscStructure_From_DiscTOC_Job.cs
+#	modified:   BizHawk.Emulation.DiscSystem/Internal/Jobs/Synthesize_DiscTOC_From_RawTOCEntries_Job.cs
+#	modified:   BizHawk.Emulation.DiscSystem/Internal/Jobs/Synthesize_Leadout_Job.cs
+#	modified:   BizHawk.Emulation.DiscSystem/Internal/SectorSynth.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.GdiPlus/GdiPlusGuiRenderer.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.GdiPlus/IGL_GdiPlus.cs
+#	new file:   Bizware/BizHawk.Bizware.BizwareGL.GdiPlus/RetroShader.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.OpenTK/BizHawk.Bizware.BizwareGL.OpenTK.csproj
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.OpenTK/IGL_TK.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.OpenTK/RetroShader.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.SlimDX/BizHawk.Bizware.BizwareGL.SlimDX.csproj
+#	deleted:    Bizware/BizHawk.Bizware.BizwareGL.SlimDX/Extensions.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.SlimDX/GLControlWrapper_SlimDX9.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL.SlimDX/IGL_SlimDX9.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/BitmapBuffer.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj
+#	deleted:    Bizware/BizHawk.Bizware.BizwareGL/CGC.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/Extensions.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/GraphicsControl.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/GuiRenderer.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/IGL.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/IGuiRenderer.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/Pipeline.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/PipelineUniform.cs
+#	renamed:    Bizware/BizHawk.Bizware.BizwareGL/CacheBlendState.cs -> Bizware/BizHawk.Bizware.BizwareGL/RenderStates.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/RenderTarget.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/RetainedGraphicsControl.cs
+#	deleted:    Bizware/BizHawk.Bizware.BizwareGL/RetroShader.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/Shader.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/Texture2d.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/UniformInfo.cs
+#	modified:   Bizware/BizHawk.Bizware.BizwareGL/VertexLayout.cs
+#	modified:   Build/BizHawk.Build.Tool.exe
+#	modified:   Build/BizHawk.Build.Tool/BizHawk.Build.Tool.csproj
+#	modified:   Build/BizHawk.Build.Tool/Tool.cs
+#	deleted:    Dist/changelog.txt
+#	modified:   README.md
+#	modified:   References/SlimDX.dll
+#	new file:   Tools/cg2glsl/cg.dll
+#	new file:   Tools/cg2glsl/cg2glsl.exe
+#	new file:   Tools/cg2glsl/cg2glsl_sources/build.bat
+#	new file:   Tools/cg2glsl/cg2glsl_sources/cg.dll
+#	new file:   Tools/cg2glsl/cg2glsl_sources/cg2glsl.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/cgGL.dll
+#	renamed:    output/dll/cgc.exe -> Tools/cg2glsl/cg2glsl_sources/cgc.exe
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/UserDict.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/_abcoll.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/_weakrefset.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/abc.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/bisect.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/collections.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/genericpath.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/heapq.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/keyword.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/linecache.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/ntpath.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/os.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/stat.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/subprocess.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/threading.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/traceback.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/types.py
+#	new file:   Tools/cg2glsl/cg2glsl_sources/lib/warnings.py
+#	new file:   Tools/cg2glsl/cgGL.dll
+#	new file:   Tools/cg2glsl/cgc.exe
+#	modified:   libgambatte/src/cpu.cpp
+#	modified:   libgambatte/src/memory.h
+#	modified:   libgambatte/src/video.h
+#	modified:   libmupen64plus/D3D8Interceptor/Direct3D8Functions.cpp
+#	modified:   libmupen64plus/D3D8Interceptor/d3d8Wrapper.cpp
+#	deleted:    output/Lua/Genesis/Splatterhouse 2 (JPN).lua
+#	deleted:    output/Lua/Genesis/Splatterhouse 2 (USA).lua
+#	deleted:    output/Lua/SNES/Super Castlevania IV.lua
+#	new file:   output/Shaders/BizHawk/BizScanlines.glsl
+#	modified:   output/Shaders/BizHawk/bicubic-fast.cgp
+#	new file:   output/Shaders/BizHawk/bicubic-fast.glsl
+#	deleted:    output/Shaders/BizHawk/bicubic-normal.cg
+#	deleted:    output/Shaders/BizHawk/bicubic-normal.cgp
+#	new file:   output/Shaders/BizHawk/hq2x.glsl
+#	renamed:    output/Shaders/BizHawk/bicubic-fast.cg -> output/Shaders/bicubic/bicubic-fast.cg
+#	new file:   output/Shaders/bicubic/bicubic-fast.glsl
+#	modified:   output/dll/d3d8.dll
+#	modified:   output/dll/libgambatte.dll
+#	modified:   output/dll/octoshock.dll
+#	modified:   output/gamedb/gamedb.txt
+#	modified:   psx/octoshock/bizhawk/octoshock.vcxproj
+#	modified:   psx/octoshock/bizhawk/octoshock.vcxproj.filters
+#	modified:   psx/octoshock/cdrom/CDUtility.cpp
+#	modified:   psx/octoshock/cdrom/CDUtility.h
+#	deleted:    psx/octoshock/cdrom/crc32.cpp
+#	deleted:    psx/octoshock/cdrom/dvdisaster.h
+#	deleted:    psx/octoshock/cdrom/galois-inlines.h
+#	deleted:    psx/octoshock/cdrom/galois.cpp
+#	deleted:    psx/octoshock/cdrom/l-ec.cpp
+#	deleted:    psx/octoshock/cdrom/lec.cpp
+#	deleted:    psx/octoshock/cdrom/lec.h
+#	deleted:    psx/octoshock/cdrom/recover-raw.cpp
+#	modified:   psx/octoshock/docs/upstreaminfo.txt
+#	modified:   psx/octoshock/psx/cdc.cpp
+#	modified:   psx/octoshock/psx/cdc.h
+#	modified:   psx/octoshock/psx/gpu.cpp
+#	modified:   psx/octoshock/psx/gpu.h
+#	modified:   psx/octoshock/psx/gpu_sprite.cpp
+#	modified:   psx/octoshock/psx/psx.cpp
+#	modified:   psx/octoshock/psx/psx.h
+#
+

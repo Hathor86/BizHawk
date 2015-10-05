@@ -158,10 +158,9 @@ namespace BizHawk.Client.Common
 			var table = Lua.NewTable();
 			if (lastAddr < Domain.Size)
 			{
-				for (var i = 0; i <length ; i++)
+				for (var i = addr; i <= lastAddr; i++)
 				{
-					int a = addr + i;
-					var v = Domain.PeekByte(a);
+					var v = Domain.PeekByte(i);
 					table[i] = v;
 				}
 			}

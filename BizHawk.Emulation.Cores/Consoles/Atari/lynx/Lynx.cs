@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
-	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight), typeof(IRegionable))]
+	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
 	public partial class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable
 	{
 		IntPtr Core;

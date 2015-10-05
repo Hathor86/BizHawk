@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Toggle Throttle":
 					_unthrottled ^= true;
-					ThrottleMessage();
+					GlobalWin.OSD.AddMessage("Unthrottled: " + _unthrottled);
 					break;
 				case "Soft Reset":
 					SoftReset();

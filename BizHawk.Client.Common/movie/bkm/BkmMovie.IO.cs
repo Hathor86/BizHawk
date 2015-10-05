@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 			Write(backupName);
 		}
 
-		public bool Load(bool preload)
+		public bool Load()
 		{
 			var file = new FileInfo(Filename);
 

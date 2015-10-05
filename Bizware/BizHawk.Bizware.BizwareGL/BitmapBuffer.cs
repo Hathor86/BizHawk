@@ -81,33 +81,6 @@ namespace BizHawk.Bizware.BizwareGL
 			UnlockBits(CurrLock);
 		}
 
-		public unsafe void YFlip()
-		{
-			//TODO - could be faster
-			var bmpdata = LockBits();
-			int[] newPixels = new int[Width * Height];
-			int todo = Width * Height;
-			int* s = (int*)bmpdata.Scan0.ToPointer();
-			fixed (int* d = newPixels)
-			{
-				for (int y = 0, si = 0, di = (Height - 1) * Width; y < Height; y++)
-				{
-					for (int x = 0; x < Width; x++, si++, di++)
-					{
-						d[di] = s[si];
-					}
-					di -= Width * 2;
-				}
-			}
-
-			UnlockBits(bmpdata);
-
-			Pixels = newPixels;
-		}
-
-		/// <summary>
-		/// Makes sure the alpha channel is clean and optionally y-flips
-		/// </summary>
 		public unsafe void Normalize(bool yflip)
 		{
 			var bmpdata = LockBits();
@@ -117,7 +90,6 @@ namespace BizHawk.Bizware.BizwareGL
 			fixed (int* d = newPixels)
 			{
 				if (yflip)
-				{
 					for (int y = 0, si = 0, di = (Height - 1) * Width; y < Height; y++)
 					{
 						for (int x = 0; x < Width; x++, si++, di++)
@@ -126,16 +98,9 @@ namespace BizHawk.Bizware.BizwareGL
 						}
 						di -= Width * 2;
 					}
-				}
 				else
 				{
-					for (int y = 0, i=0; y < Height; y++)
-					{
-						for (int x = 0; x < Width; x++, i++)
-						{
-							d[i] = s[i] | unchecked((int)0xFF000000);
-						}
-					}
+					//TODO
 				}
 			}
 
@@ -249,7 +214,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		/// <summary>
-		/// loads an image (png,bmp,etc) from the specified stream
+		/// loads an image from the specified stream
 		/// </summary>
 		public BitmapBuffer(Stream stream, BitmapLoadOptions options)
 		{
@@ -512,8 +477,6 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public unsafe Bitmap ToSysdrawingBitmap()
 		{
-			if (WrappedBitmap != null)
-				return (Bitmap)WrappedBitmap.Clone();
 			var pf = PixelFormat.Format32bppArgb;
 			if (!HasAlpha)
 				pf = PixelFormat.Format24bppRgb;
@@ -528,17 +491,6 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public unsafe void ToSysdrawingBitmap(Bitmap bmp)
 		{
-			if (WrappedBitmap != null)
-			{
-				using (var g = Graphics.FromImage(bmp))
-				{
-					g.CompositingMode = sd.Drawing2D.CompositingMode.SourceCopy;
-					g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
-					g.DrawImageUnscaled(WrappedBitmap, 0, 0);
-					return;
-				}
-			}
-
 			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently. 
 			var bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
