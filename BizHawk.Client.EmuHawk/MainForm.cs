@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckMessages();
 			LogConsole.PositionConsole();
 
-			for (; ; )
+			for (;;)
 			{
 				Input.Instance.Update();
 
@@ -495,7 +495,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			//NOTE: this gets called twice sometimes. once by using() in Program.cs and once from winforms internals when the form is closed...
-		
+
 			if (GlobalWin.DisplayManager != null)
 			{
 				GlobalWin.DisplayManager.Dispose();
@@ -667,7 +667,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerInputCoalescer conInput = Global.ControllerInputCoalescer as ControllerInputCoalescer;
 
-			for (; ; )
+			for (;;)
 			{
 
 				// loop through all available events
@@ -774,14 +774,14 @@ namespace BizHawk.Client.EmuHawk
 					float x = P.X / (float)video.BufferWidth;
 					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
-					
+
 				if (o.Item1 == "WMouse Y")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
 					float y = P.Y / (float)video.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 				}
-					
+
 				return o;
 			}));
 		}
@@ -819,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				using(var img = bb.ToSysdrawingBitmap())
+				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
 			}
 
@@ -931,7 +931,7 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		public void ToggleFullscreen(bool allowSuppress=false)
+		public void ToggleFullscreen(bool allowSuppress = false)
 		{
 			//prohibit this operation if the current controls include LMouse
 			if (allowSuppress)
@@ -943,23 +943,23 @@ namespace BizHawk.Client.EmuHawk
 			if (_inFullscreen == false)
 			{
 				SuspendLayout();
-				#if WINDOWS
-					//Work around an AMD driver bug in >= vista:
-					//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-					//AMD cards manifest a problem under these circumstances, flickering other monitors. 
-					//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
-					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
-					//At any rate, we can solve this by adding a 1px black border around the GL control
-					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					if (Global.Config.DispFullscreenHacks)
-					{
-						//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-						//It seems that some statusbar elements composite with the backcolor. 
-						//Maybe we could add another control under the statusbar. with a different backcolor
-						Padding = new Padding(1);
-						BackColor = Color.Black;
-					}
-				#endif
+#if WINDOWS
+				//Work around an AMD driver bug in >= vista:
+				//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
+				//AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
+				//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
+				//At any rate, we can solve this by adding a 1px black border around the GL control
+				//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
+				if (Global.Config.DispFullscreenHacks)
+				{
+					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
+					//It seems that some statusbar elements composite with the backcolor. 
+					//Maybe we could add another control under the statusbar. with a different backcolor
+					Padding = new Padding(1);
+					BackColor = Color.Black;
+				}
+#endif
 
 				_windowedLocation = Location;
 
@@ -976,16 +976,16 @@ namespace BizHawk.Client.EmuHawk
 
 				WindowState = FormWindowState.Normal;
 
-				#if WINDOWS
-					//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
-					Padding = new Padding(0);
-					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
-					//so we need the statusbar and mainform backdrop color to match
-					BackColor = SystemColors.Control; 
-				#endif
+#if WINDOWS
+				//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
+				Padding = new Padding(0);
+				//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
+				//so we need the statusbar and mainform backdrop color to match
+				BackColor = SystemColors.Control;
+#endif
 
 				_inFullscreen = false;
-					
+
 				SynchChrome();
 				Location = _windowedLocation;
 				ResumeLayout();
@@ -1796,8 +1796,8 @@ namespace BizHawk.Client.EmuHawk
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 			var video = Global.Emulator.VideoProvider();
 			//bool change = false;
-			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
-			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualWidth);
+			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
+			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualWidth);
 			if (currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize)
 			{
 				_lastVideoSize = currVideoSize;
@@ -1983,7 +1983,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
-            else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
+			else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
 			{
 				FlagNeedsReboot();
 			}
@@ -3274,20 +3274,20 @@ namespace BizHawk.Client.EmuHawk
 			bool deterministic = deterministicemulation.HasValue ?
 				deterministicemulation.Value :
 				Global.MovieSession.QueuedMovie != null;
-				//Global.MovieSession.Movie.IsActive;
-			
+			//Global.MovieSession.Movie.IsActive;
+
 			if (!GlobalWin.Tools.AskSave())
 			{
 				return false;
 			}
 
 			var loader = new RomLoader
-				{
-					ChooseArchive = LoadArhiveChooser,
-					ChoosePlatform = ChoosePlatformForRom,
-					Deterministic = deterministic,
-					MessageCallback = GlobalWin.OSD.AddMessage
-				};
+			{
+				ChooseArchive = LoadArhiveChooser,
+				ChoosePlatform = ChoosePlatformForRom,
+				Deterministic = deterministic,
+				MessageCallback = GlobalWin.OSD.AddMessage
+			};
 			Global.FirmwareManager.RecentlyServed.Clear();
 
 			loader.OnLoadError += ShowLoadError;
@@ -3299,7 +3299,7 @@ namespace BizHawk.Client.EmuHawk
 			// the new settings objects
 			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
 			CloseGame();
-			
+
 			var nextComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 			var result = loader.LoadRom(path, nextComm);
@@ -3410,6 +3410,8 @@ namespace BizHawk.Client.EmuHawk
 						Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
 					}
 				}
+
+				GlobalWin.Tools.Load<ICustomGameTool>();
 				return true;
 			}
 			else
@@ -3672,7 +3674,7 @@ namespace BizHawk.Client.EmuHawk
 					return master.Rewind();
 				}
 			}
-			
+
 			var isRewinding = false;
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
 				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
